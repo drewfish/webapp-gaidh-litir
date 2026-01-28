@@ -9,3 +9,43 @@ dependencies = [
     "uvicorn>=0.34.3",
 ]
 
+[tool.pyright]
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+include = ["tx-proc","src/"]
+pythonVersion = "3.12"
+reportShadowedImports = "error"
+reportUninitializedInstanceVariable = "error"
+reportUnnecessaryTypeIgnoreComment = "error"
+reportUnusedCallResult = false
+strict = ["tx-proc","src/"]
+
+[tool.ruff]
+indent-width = 4
+line-length = 88
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = ["A", "ANN", "B", "C4", "COM", "E", "EM", "EXE", "F", "FLY", "G", "I", "ICN", "N", "PIE", "PYI", "Q", "R", "RET", "RUF", "S", "TID", "TRY", "UP", "W", "YTT"]
+ignore = ["ANN401", "COM812", "RUF001", "RUF003"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
+from-first = true
+no-lines-before = ["third-party", "first-party"]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.uv]
+dev-dependencies = [
+    "pyright>=1.1.403",
+    "ruff>=0.12.4",
+]

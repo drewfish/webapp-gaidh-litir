@@ -8,5 +8,5 @@ services:
   region: oregon
   buildCommand: ./.render/install.sh
   startCommand: ./.render/run.sh
-  autoDeployTrigger: commit
+  autoDeployTrigger: manual
 
