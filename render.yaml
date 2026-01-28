@@ -1,0 +1,12 @@
+version: "1"
+services:
+- type: web
+  name: gaidh-litir
+  runtime: python
+  repo: https://github.com/drewfish/webapp-gaidh-litir
+  plan: starter
+  region: oregon
+  buildCommand: ./.render/install.sh
+  startCommand: ./.render/run.sh
+  autoDeployTrigger: commit
+

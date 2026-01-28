@@ -1,0 +1,11 @@
+[project]
+name = "gaidh-litir"
+version = "0.1.0"
+description = "website of Gaelic tools and games"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.115.12",
+    "uvicorn>=0.34.3",
+]
+
