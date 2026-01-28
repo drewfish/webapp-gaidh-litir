@@ -11,4 +11,4 @@ local-format: *.py
 	uv run ruff format $^
 
 local-run:
-	uv run -- uvicorn --host 0.0.0.0 --reload main:app
+	uv run -- uvicorn --host 0.0.0.0 --port 8000 --reload main:app
