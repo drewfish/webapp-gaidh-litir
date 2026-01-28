@@ -10,3 +10,5 @@ local-format: *.py
 	uv run ruff check --fix $^
 	uv run ruff format $^
 
+local-run:
+	uv run -- uvicorn --host 0.0.0.0 --reload main:app

@@ -9,6 +9,12 @@ dependencies = [
     "uvicorn>=0.34.3",
 ]
 
+[dependency-groups]
+dev = [
+    "pyright>=1.1.403",
+    "ruff>=0.12.4",
+]
+
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
 include = ["tx-proc","src/"]
@@ -43,9 +49,3 @@ indent-style = "space"
 line-ending = "auto"
 quote-style = "double"
 skip-magic-trailing-comma = false
-
-[tool.uv]
-dev-dependencies = [
-    "pyright>=1.1.403",
-    "ruff>=0.12.4",
-]
