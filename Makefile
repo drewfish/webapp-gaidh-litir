@@ -5,6 +5,7 @@ check-types: *.py
 local-ci: *.py
 	uv run ruff check $^
 	make check-types
+	shellcheck .render/*.sh
 
 local-format: *.py
 	uv run ruff check --fix $^
