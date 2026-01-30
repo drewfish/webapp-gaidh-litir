@@ -8,12 +8,13 @@ app = FastAPI(
     docs_url=None,
     redoc_url=None,
     openapi_url=None,
+    default_response_class=HTMLResponse,
 )
-templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
 async def read_root(request: Request, name: str = "World") -> Any:
     context = {"name": name}
     return templates.TemplateResponse(
