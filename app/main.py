@@ -1,5 +1,4 @@
-from typing import Any
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from app import gaemaichean
@@ -17,12 +16,12 @@ app.include_router(gaemaichean.router)
 
 
 @app.head("/")
-async def head_root() -> str:
+def head_root() -> str:
     return ""
 
 
 @app.get("/")
-async def read_root(render: RendererDep, name: str = "World") -> Any:
+async def read_root(render: RendererDep, name: str = "World") -> Response:
     return render(
         "root.html",
         name=name,

@@ -1,13 +1,13 @@
+from collections.abc import Callable
 from typing import Annotated, Any
-from fastapi import Depends, Request
+from fastapi import Depends, Request, Response
 from fastapi.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="templates")
-TemplateResponse = Any
 
 
-def get_renderer(request: Request) -> Any:
-    def _render_template(template_name: str, **kwargs: Any) -> Any:
+def get_renderer(request: Request) -> Callable[[str], Response]:
+    def _render_template(template_name: str, /, **kwargs: Any) -> Response:
         return templates.TemplateResponse(
             request=request,
             name=template_name,
