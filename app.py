@@ -14,6 +14,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+@app.head("/")
+async def head_root() -> Any:
+    return ""
+
+
 @app.get("/")
 async def read_root(request: Request, name: str = "World") -> Any:
     context = {"name": name}
