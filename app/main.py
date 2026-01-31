@@ -16,13 +16,10 @@ app.include_router(gaemaichean.router)
 
 
 @app.head("/")
-def head_root() -> str:
+def head_homepage() -> str:
     return ""
 
 
 @app.get("/")
-async def read_root(render: RendererDep, name: str = "World") -> Response:
-    return render(
-        "root.html",
-        name=name,
-    )
+async def read_homepage(render: RendererDep) -> Response:
+    return render("homepage.html")
