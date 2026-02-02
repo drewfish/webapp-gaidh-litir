@@ -2,6 +2,10 @@
 check-types: app/*.py
 	uv run pyright $^
 
+local-setup:
+	uv sync
+	@echo 'now run `source .venv/bin/activate.{sh,fish}`'
+
 local-ci: app/*.py
 	uv run ruff check $^
 	make check-types

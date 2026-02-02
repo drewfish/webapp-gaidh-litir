@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Liosta-Fhaclan{% endblock %}
+{% block content %}
+    <div>
+        TODO -- clue letters
+    </div>
+    <div>
+        TODO -- the guessing
+    </div>
+    <div>
+        TODO -- list of target words
+    </div>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+
+let GAME_DATA = {{ game_data | json | safe }};
+
+function guess_letter(litir) {
+    console.log("TODO -- guess_letter()", litir);
+    // TODO
+    // find associated clue letter
+    // disable it
+    // add letter to the-guessing
+}
+
+
+function guess_word() {
+    console.log("TODO -- guess_word()");
+    // TODO
+    // declassify any target words that are just-found
+    // find associated target word
+    // return if not found
+    // show letters
+    // declassify missing
+    // classify found & just-found
+}
+
+
+function setup_game() {
+    console.log("TODO -- setup_game()");
+    // TODO
+    // fill list of clue letters
+    // fill list of target words
+    // add click listeners to clue letters
+    // add keyboard listener
+}
+
+
+document.addEventListener("DOMContentLoaded", setup_game);
+</script>
+{% endblock %}
