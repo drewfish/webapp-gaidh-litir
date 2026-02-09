@@ -6,9 +6,7 @@ from fastapi import APIRouter
 
 from .dependencies import DATA_DIR, RendererDep
 
-router = APIRouter(
-    prefix="/geama",
-)
+router = APIRouter()
 
 
 @router.get("/liosta-fhaclan")
