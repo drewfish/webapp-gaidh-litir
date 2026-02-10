@@ -1,2 +1,17 @@
 @import "tailwindcss";
 @source "../templates";
+.geama-button {
+    @apply px-3 py-1 rounded-lg shadow-md
+}
+.geama-eirmeas-enabled {
+    @apply text-white bg-green-600 hover:bg-green-800
+}
+.geama-eirmeas-disabled {
+    @apply text-green-200 bg-green-600/75
+}
+.geama-oidheam-enabled {
+    @apply text-white bg-blue-600 hover:bg-blue-800
+}
+.geama-oidheam-disabled {
+    @apply text-blue-200 bg-blue-600/75
+}

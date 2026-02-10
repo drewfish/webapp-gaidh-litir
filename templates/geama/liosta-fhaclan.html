@@ -12,10 +12,11 @@
                 </ul>
             </div>
             <div class="bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
-                <div id="an-t-oidheam" class="w-max text-lg font-mono"></div>
-                <div id="an-t-eirmeas" class="w-max font-mono"></div>
+                <div id="an-t-oidheam" class="text-lg font-mono"></div>
                 <div>
-                    <button id="tomhais" class="w-max px-2 py-1 rounded-md bg-indigo-400 hover:bg-indigo-500">tomhais!</button>
+                    <span id="an-t-eirmeas" class="text-lg font-mono"></span>
+                    <button id="eirmeas-caill" class="mr-3 geama-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
+                    <button id="tomhais" class="geama-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
                 </div>
             </div>
         </div>
@@ -43,7 +44,7 @@
                     tàthanDOM = oidheamDOM;
                 }
                 oidheamDOM.textContent = litir;
-                oidheamDOM.classList.add("mr-1", "font-bold");
+                oidheamDOM.classList.add("mr-2", "geama-button", "font-bold");
                 oidheam_litir_an_comas(oidheamDOM);
                 antOidheamDOM.appendChild(oidheamDOM);
                 oidheamDOM.addEventListener("click", () => {
@@ -71,13 +72,15 @@
 
         function oidheam_litir_an_comas(litirDOM) {
             litirDOM.disabled = false;
-            litirDOM.classList.remove("text-gray-400");
+            litirDOM.classList.add("geama-oidheam-enabled");
+            litirDOM.classList.remove("geama-oidheam-disabled");
         }
 
 
         function oidheam_litir_à_comas(litirDOM) {
             litirDOM.disabled = true;
-            litirDOM.classList.add("text-gray-400");
+            litirDOM.classList.remove("geama-oidheam-enabled");
+            litirDOM.classList.add("geama-oidheam-disabled");
         }
 
 
@@ -130,18 +133,16 @@
                 eirmeasDOM.id = `litir-eirmeas-${eirmeasÀite}`;
                 eirmeasDOM.àite = eirmeasÀite;
                 eirmeasDOM.textContent = "_";
-                eirmeasDOM.classList.add("mr-3");
+                eirmeasDOM.classList.add("mr-2", "geama-button", "font-bold");
                 antEairmeasDOM.appendChild(eirmeasDOM);
                 eirmeasDOM.addEventListener("click", () => {
                     PÀIRTEAN_EIRMEAS.splice(eirmeasÀite, 1);
                     oidheam_ùraich();
                     eirmeas_ùraich();
                 });
+                eirmeas_litir_à_comas(eirmeasDOM);
             }
-            let caillDOM = document.createElement("button");
-            caillDOM.id = "eirmeas-caill";
-            caillDOM.textContent = "X";
-            caillDOM.classList.add("bg-red-300", "text-red-800", "px-1");
+            let caillDOM = document.getElementById("eirmeas-caill");
             caillDOM.style.visibility = "hidden";
             caillDOM.addEventListener("click", () => {
                 PÀIRTEAN_EIRMEAS = [];
@@ -158,6 +159,20 @@
             tomhaisDOM = document.getElementById("tomhais");
             tomhaisDOM.addEventListener("click", eirmeas_tomhais);
             document.addEventListener("keyup", meur_chlàr_tachairt);
+        }
+
+
+        function eirmeas_litir_an_comas(litirDOM) {
+            litirDOM.disabled = false;
+            litirDOM.classList.add("geama-eirmeas-enabled");
+            litirDOM.classList.remove("geama-eirmeas-disabled");
+        }
+
+
+        function eirmeas_litir_à_comas(litirDOM) {
+            litirDOM.disabled = true;
+            litirDOM.classList.remove("geama-eirmeas-enabled");
+            litirDOM.classList.add("geama-eirmeas-disabled");
         }
 
 
@@ -215,6 +230,11 @@
                 let [litir, oidheamÀite] = PÀIRTEAN_EIRMEAS[eirmeasÀite] || ["_"];
                 eirmeasDOM.textContent = litir;
                 eirmeasDOM.oidheamÀite = oidheamÀite;
+                if (litir === "_") {
+                    eirmeas_litir_à_comas(eirmeasDOM);
+                } else {
+                    eirmeas_litir_an_comas(eirmeasDOM);
+                }
             }
             let caillDOM = document.getElementById("eirmeas-caill");
             caillDOM.style.visibility = "hidden";
