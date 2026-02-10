@@ -39,8 +39,7 @@ function oidheam_dèan() {
         oidheamDOM.id = `litir-oidheam-${oidheamÀite}`;
         oidheamDOM.àite = oidheamÀite;
         if (litir === "-" && !tàthanDOM) {
-            oidheamDOM.id = "tàthan";
-            oidheamDOM.àite = "-";
+            oidheamDOM.classList.add("oidheam-tàthan");
             tàthanDOM = oidheamDOM;
         }
         oidheamDOM.textContent = litir;
@@ -56,9 +55,9 @@ function oidheam_dèan() {
     }
     if (! tàthanDOM) {
         let tàthanDOM = document.createElement("button");
-        tàthanDOM.id = "tàthan";
+        tàthanDOM.id = "oidheam-tàthan";
         tàthanDOM.àite = "-";
-        tàthanDOM.classList.add("font-bold");
+        tàthanDOM.classList.add("oidheam-tàthan", "font-bold");
         oidheam_litir_an_comas(tàthanDOM);
         tàthanDOM.textContent = "-";
         tàthanDOM.classList.add("ml-2", "font-normal");
@@ -84,7 +83,7 @@ function oidheam_litir_à_comas(litirDOM) {
 
 function oidheam_lorg_litirDOM(litir, oidheamÀite) {
     if (litir === "-") {
-        return document.getElementById("tàthan");
+        return document.getElementsByClassName("oidheam-tàthan")[0];
     }
     if (oidheamÀite) {
         return document.getElementById(`litir-oidheam-${oidheamÀite}`);
@@ -110,7 +109,7 @@ function oidheam_ùraich() {
         let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
         oidheam_litir_an_comas(oidheamDOM);
     }
-    let tàthanDOM = document.getElementById("tàthan");
+    let tàthanDOM = oidheam_lorg_litirDOM("-");
     oidheam_litir_an_comas(tàthanDOM);
     for (const [litir, oidheamÀite] of PÀIRTEAN_EAIRMEAS) {
         let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
@@ -182,7 +181,7 @@ function eairmeas_cuir_ris_litir(litir, oidheamÀite) {
     }
     let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
     if (oidheamDOM) {
-        PÀIRTEAN_EAIRMEAS.push([litir, oidheamÀite]);
+        PÀIRTEAN_EAIRMEAS.push([litir, oidheamDOM.àite]);
         oidheam_ùraich();
         eairmeas_ùraich();
     }
