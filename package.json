@@ -1,0 +1,11 @@
+{
+  "name": "webapp-gaidh-litir",
+  "version": "0.1.1",
+  "author": "Drew Folta <drew@folta.net>",
+  "description": "website of Gaelic tools and games",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^4.1.18",
+    "@tailwindcss/cli": "^4.1.18"
+  }
+}

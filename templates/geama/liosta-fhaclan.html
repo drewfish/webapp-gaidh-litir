@@ -201,7 +201,7 @@
             }
             cuimseDOM.textContent = eairmeas.split("").join(" ");
             cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
-    // FUTURE -- bold recenlty-chosen cuimse (but only that one)
+            // FUTURE -- bold recenlty-chosen cuimse (but only that one)
             PÀIRTEAN_EAIRMEAS = [];
             oidheam_ùraich();
             eairmeas_ùraich();
@@ -228,7 +228,7 @@
                 cuimseDOM.id = `cuimse-${cuimse}`;
                 cuimseDOM.textContent = "_ ".repeat(cuimse.length);
                 naCuimseanDOM.appendChild(cuimseDOM);
-        // FUTURE -- each letter is an element, so that we can hint letters
+                // FUTURE -- each letter is an element, so that we can hint letters
             }
         }
 
