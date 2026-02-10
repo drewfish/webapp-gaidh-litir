@@ -51,11 +51,6 @@
                 oidheamDOM.addEventListener("click", () => {
                     eirmeas_litir_gnìomhaich(litir, oidheamÀite);
                 });
-                /* TODO -- do we really need this, or is "click" enough ?
-                oidheamDOM.addEventListener("touchstart", () => {
-                    eirmeas_litir_gnìomhaich(litir, oidheamÀite);
-                });
-                */
             }
             if (! tàthanDOM) {
                 let tàthanDOM = document.createElement("button");
@@ -152,13 +147,6 @@
                 oidheam_ùraich();
                 eirmeas_ùraich();
             });
-            /* TODO -- do we really need this, or is "click" enough ?
-            caillDOM.addEventListener("touchstart", () => {
-                PÀIRTEAN_EIRMEAS = [];
-                oidheam_ùraich();
-                eirmeas_ùraich();
-            });
-            */
             antEairmeasDOM.appendChild(caillDOM);
 
             tomhaisDOM = document.getElementById("tomhais");
