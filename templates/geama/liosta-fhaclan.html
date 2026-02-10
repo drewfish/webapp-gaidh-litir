@@ -24,253 +24,253 @@
         </div>
     </div>
 
-<script type="text/javascript">
-let LITRICHEAN = "aàbcdeèfghiìlmnoòprstuù";
-let DÀTA_GEAMA = {{ game_data | json | safe }};
-let PÀIRTEAN_EAIRMEAS = [];
+    <script type="text/javascript">
+        let LITRICHEAN = "aàbcdeèfghiìlmnoòprstuù";
+        let DÀTA_GEAMA = {{ game_data | json | safe }};
+        let PÀIRTEAN_EAIRMEAS = [];
 
 
-function oidheam_dèan() {
-    let antOidheamDOM = document.getElementById("an-t-oidheam");
-    let tàthanDOM = undefined;
-    for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-        let litir = DÀTA_GEAMA.oidheam[oidheamÀite];
-        let oidheamDOM = document.createElement("button");
-        oidheamDOM.id = `litir-oidheam-${oidheamÀite}`;
-        oidheamDOM.àite = oidheamÀite;
-        if (litir === "-" && !tàthanDOM) {
-            oidheamDOM.classList.add("oidheam-tàthan");
-            tàthanDOM = oidheamDOM;
+        function oidheam_dèan() {
+            let antOidheamDOM = document.getElementById("an-t-oidheam");
+            let tàthanDOM = undefined;
+            for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
+                let litir = DÀTA_GEAMA.oidheam[oidheamÀite];
+                let oidheamDOM = document.createElement("button");
+                oidheamDOM.id = `litir-oidheam-${oidheamÀite}`;
+                oidheamDOM.àite = oidheamÀite;
+                if (litir === "-" && !tàthanDOM) {
+                    oidheamDOM.classList.add("oidheam-tàthan");
+                    tàthanDOM = oidheamDOM;
+                }
+                oidheamDOM.textContent = litir;
+                oidheamDOM.classList.add("mr-1", "font-bold");
+                oidheam_litir_an_comas(oidheamDOM);
+                antOidheamDOM.appendChild(oidheamDOM);
+                oidheamDOM.addEventListener("click", () => {
+                    eairmeas_cuir_ris_litir(litir, oidheamÀite)
+                });
+                oidheamDOM.addEventListener("touchstart", () => {
+                    eairmeas_cuir_ris_litir(litir, oidheamÀite)
+                });
+            }
+            if (! tàthanDOM) {
+                let tàthanDOM = document.createElement("button");
+                tàthanDOM.id = "oidheam-tàthan";
+                tàthanDOM.àite = "-";
+                tàthanDOM.classList.add("oidheam-tàthan", "font-bold");
+                oidheam_litir_an_comas(tàthanDOM);
+                tàthanDOM.textContent = "-";
+                tàthanDOM.classList.add("ml-2", "font-normal");
+                antOidheamDOM.appendChild(tàthanDOM);
+                tàthanDOM.addEventListener("click", () => {
+                    eairmeas_cuir_ris_litir("-");
+                });
+            }
         }
-        oidheamDOM.textContent = litir;
-        oidheamDOM.classList.add("mr-1", "font-bold");
-        oidheam_litir_an_comas(oidheamDOM);
-        antOidheamDOM.appendChild(oidheamDOM);
-        oidheamDOM.addEventListener("click", () => {
-            eairmeas_cuir_ris_litir(litir, oidheamÀite)
-        });
-        oidheamDOM.addEventListener("touchstart", () => {
-            eairmeas_cuir_ris_litir(litir, oidheamÀite)
-        });
-    }
-    if (! tàthanDOM) {
-        let tàthanDOM = document.createElement("button");
-        tàthanDOM.id = "oidheam-tàthan";
-        tàthanDOM.àite = "-";
-        tàthanDOM.classList.add("oidheam-tàthan", "font-bold");
-        oidheam_litir_an_comas(tàthanDOM);
-        tàthanDOM.textContent = "-";
-        tàthanDOM.classList.add("ml-2", "font-normal");
-        antOidheamDOM.appendChild(tàthanDOM);
-        tàthanDOM.addEventListener("click", () => {
-            eairmeas_cuir_ris_litir("-");
-        });
-    }
-}
 
 
-function oidheam_litir_an_comas(litirDOM) {
-    litirDOM.disabled = false;
-    litirDOM.classList.remove("text-gray-400");
-}
-
-
-function oidheam_litir_à_comas(litirDOM) {
-    litirDOM.disabled = true;
-    litirDOM.classList.add("text-gray-400");
-}
-
-
-function oidheam_lorg_litirDOM(litir, oidheamÀite) {
-    if (litir === "-") {
-        return document.getElementsByClassName("oidheam-tàthan")[0];
-    }
-    if (oidheamÀite) {
-        return document.getElementById(`litir-oidheam-${oidheamÀite}`);
-    }
-    for (oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-        let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-        if (! oidheamDOM) {
-            continue;
+        function oidheam_litir_an_comas(litirDOM) {
+            litirDOM.disabled = false;
+            litirDOM.classList.remove("text-gray-400");
         }
-        if (oidheamDOM.disabled) {
-            continue;
+
+
+        function oidheam_litir_à_comas(litirDOM) {
+            litirDOM.disabled = true;
+            litirDOM.classList.add("text-gray-400");
         }
-        if (oidheamDOM.textContent === litir) {
-            return oidheamDOM;
+
+
+        function oidheam_lorg_litirDOM(litir, oidheamÀite) {
+            if (litir === "-") {
+                return document.getElementsByClassName("oidheam-tàthan")[0];
+            }
+            if (oidheamÀite) {
+                return document.getElementById(`litir-oidheam-${oidheamÀite}`);
+            }
+            for (oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
+                let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
+                if (! oidheamDOM) {
+                    continue;
+                }
+                if (oidheamDOM.disabled) {
+                    continue;
+                }
+                if (oidheamDOM.textContent === litir) {
+                    return oidheamDOM;
+                }
+            }
+            return undefined;
         }
-    }
-    return undefined;
-}
 
 
-function oidheam_ùraich() {
-    for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-        let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-        oidheam_litir_an_comas(oidheamDOM);
-    }
-    let tàthanDOM = oidheam_lorg_litirDOM("-");
-    oidheam_litir_an_comas(tàthanDOM);
-    for (const [litir, oidheamÀite] of PÀIRTEAN_EAIRMEAS) {
-        let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
-        oidheam_litir_à_comas(oidheamDOM);
-    }
-    if (eairmeas_tàthan_mu_dheireadh()) {
-        oidheam_litir_à_comas(tàthanDOM);
-    } else {
-        oidheam_litir_an_comas(tàthanDOM);
-    }
-}
+        function oidheam_ùraich() {
+            for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
+                let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
+                oidheam_litir_an_comas(oidheamDOM);
+            }
+            let tàthanDOM = oidheam_lorg_litirDOM("-");
+            oidheam_litir_an_comas(tàthanDOM);
+            for (const [litir, oidheamÀite] of PÀIRTEAN_EAIRMEAS) {
+                let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
+                oidheam_litir_à_comas(oidheamDOM);
+            }
+            if (eairmeas_tàthan_mu_dheireadh()) {
+                oidheam_litir_à_comas(tàthanDOM);
+            } else {
+                oidheam_litir_an_comas(tàthanDOM);
+            }
+        }
 
 
-function eairmeas_dèan() {
-    let antEairmeasDOM = document.getElementById("an-t-eairmeas");
-    for (let eairmeasÀite = 0; eairmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eairmeasÀite++) {
-        let eairmeasDOM = document.createElement("button");
-        eairmeasDOM.id = `litir-eairmeas-${eairmeasÀite}`;
-        eairmeasDOM.àite = eairmeasÀite;
-        eairmeasDOM.textContent = "_";
-        eairmeasDOM.classList.add("mr-3");
-        antEairmeasDOM.appendChild(eairmeasDOM);
-        eairmeasDOM.addEventListener("click", () => {
-            PÀIRTEAN_EAIRMEAS.splice(eairmeasÀite, 1);
+        function eairmeas_dèan() {
+            let antEairmeasDOM = document.getElementById("an-t-eairmeas");
+            for (let eairmeasÀite = 0; eairmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eairmeasÀite++) {
+                let eairmeasDOM = document.createElement("button");
+                eairmeasDOM.id = `litir-eairmeas-${eairmeasÀite}`;
+                eairmeasDOM.àite = eairmeasÀite;
+                eairmeasDOM.textContent = "_";
+                eairmeasDOM.classList.add("mr-3");
+                antEairmeasDOM.appendChild(eairmeasDOM);
+                eairmeasDOM.addEventListener("click", () => {
+                    PÀIRTEAN_EAIRMEAS.splice(eairmeasÀite, 1);
+                    oidheam_ùraich();
+                    eairmeas_ùraich();
+                });
+            }
+            let caillDOM = document.createElement("button");
+            caillDOM.id = "eairmeas-caill";
+            caillDOM.textContent = "X";
+            caillDOM.classList.add("bg-red-300", "text-red-800", "px-1");
+            caillDOM.style.visibility = "hidden";
+            caillDOM.addEventListener("click", () => {
+                PÀIRTEAN_EAIRMEAS = [];
+                oidheam_ùraich();
+                eairmeas_ùraich();
+            });
+            caillDOM.addEventListener("touchstart", () => {
+                PÀIRTEAN_EAIRMEAS = [];
+                oidheam_ùraich();
+                eairmeas_ùraich();
+            });
+            antEairmeasDOM.appendChild(caillDOM);
+
+            tomhaisDOM = document.getElementById("tomhais");
+            tomhaisDOM.addEventListener("click", eairmeas_tomhais);
+            document.addEventListener("keyup", meur_chlàr_tachairt);
+        }
+
+
+        function eairmeas_tàthan_mu_dheireadh() {
+            return PÀIRTEAN_EAIRMEAS.length && PÀIRTEAN_EAIRMEAS.at(-1)[0] === "-";
+        }
+
+
+        function eairmeas_cuir_ris_litir(litir, oidheamÀite) {
+            if (PÀIRTEAN_EAIRMEAS.length >= DÀTA_GEAMA.uas_mheud_fad) {
+                return;
+            }
+            if (litir === "-") {
+                if (eairmeas_tàthan_mu_dheireadh()) {
+                    return;
+                }
+                PÀIRTEAN_EAIRMEAS.push(["-", undefined]);
+                oidheam_ùraich();
+                eairmeas_ùraich();
+                return;
+            }
+            let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
+            if (oidheamDOM) {
+                PÀIRTEAN_EAIRMEAS.push([litir, oidheamDOM.àite]);
+                oidheam_ùraich();
+                eairmeas_ùraich();
+            }
+        }
+
+
+        function eairmeas_tomhais() {
+            let eairmeas = "";
+            for (const [litir] of PÀIRTEAN_EAIRMEAS) {
+                eairmeas += litir;
+            }
+            let cuimseDOM = document.getElementById(`cuimse-${eairmeas}`);
+            if (! cuimseDOM) {
+                let caillDOM = document.getElementById("eairmeas-caill");
+                caillDOM.style.visibility = "visible";
+                return;
+            }
+            cuimseDOM.textContent = eairmeas.split("").join(" ");
+            cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+    // FUTURE -- bold recenlty-chosen cuimse (but only that one)
+            PÀIRTEAN_EAIRMEAS = [];
             oidheam_ùraich();
             eairmeas_ùraich();
-        });
-    }
-    let caillDOM = document.createElement("button");
-    caillDOM.id = "eairmeas-caill";
-    caillDOM.textContent = "X";
-    caillDOM.classList.add("bg-red-300", "text-red-800", "px-1");
-    caillDOM.style.visibility = "hidden";
-    caillDOM.addEventListener("click", () => {
-        PÀIRTEAN_EAIRMEAS = [];
-        oidheam_ùraich();
-        eairmeas_ùraich();
-    });
-    caillDOM.addEventListener("touchstart", () => {
-        PÀIRTEAN_EAIRMEAS = [];
-        oidheam_ùraich();
-        eairmeas_ùraich();
-    });
-    antEairmeasDOM.appendChild(caillDOM);
-
-    tomhaisDOM = document.getElementById("tomhais");
-    tomhaisDOM.addEventListener("click", eairmeas_tomhais);
-    document.addEventListener("keyup", meur_chlàr_tachairt);
-}
-
-
-function eairmeas_tàthan_mu_dheireadh() {
-    return PÀIRTEAN_EAIRMEAS.length && PÀIRTEAN_EAIRMEAS.at(-1)[0] === "-";
-}
-
-
-function eairmeas_cuir_ris_litir(litir, oidheamÀite) {
-    if (PÀIRTEAN_EAIRMEAS.length >= DÀTA_GEAMA.uas_mheud_fad) {
-        return;
-    }
-    if (litir === "-") {
-        if (eairmeas_tàthan_mu_dheireadh()) {
-            return;
         }
-        PÀIRTEAN_EAIRMEAS.push(["-", undefined]);
-        oidheam_ùraich();
-        eairmeas_ùraich();
-        return;
-    }
-    let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
-    if (oidheamDOM) {
-        PÀIRTEAN_EAIRMEAS.push([litir, oidheamDOM.àite]);
-        oidheam_ùraich();
-        eairmeas_ùraich();
-    }
-}
 
 
-function eairmeas_tomhais() {
-    let eairmeas = "";
-    for (const [litir] of PÀIRTEAN_EAIRMEAS) {
-        eairmeas += litir;
-    }
-    let cuimseDOM = document.getElementById(`cuimse-${eairmeas}`);
-    if (! cuimseDOM) {
-        let caillDOM = document.getElementById("eairmeas-caill");
-        caillDOM.style.visibility = "visible";
-        return;
-    }
-    cuimseDOM.textContent = eairmeas.split("").join(" ");
-    cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
-    // FUTURE -- bold recenlty-chosen cuimse (but only that one)
-    PÀIRTEAN_EAIRMEAS = [];
-    oidheam_ùraich();
-    eairmeas_ùraich();
-}
+        function eairmeas_ùraich() {
+            let antEairmeasDOM = document.getElementById("an-t-eairmeas");
+            for (let eairmeasÀite = 0; eairmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eairmeasÀite++) {
+                let eairmeasDOM = document.getElementById(`litir-eairmeas-${eairmeasÀite}`);
+                let [litir, oidheamÀite] = PÀIRTEAN_EAIRMEAS[eairmeasÀite] || ["_"];
+                eairmeasDOM.textContent = litir;
+                eairmeasDOM.oidheamÀite = oidheamÀite;
+            }
+            let caillDOM = document.getElementById("eairmeas-caill");
+            caillDOM.style.visibility = "hidden";
+        }
 
 
-function eairmeas_ùraich() {
-    let antEairmeasDOM = document.getElementById("an-t-eairmeas");
-    for (let eairmeasÀite = 0; eairmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eairmeasÀite++) {
-        let eairmeasDOM = document.getElementById(`litir-eairmeas-${eairmeasÀite}`);
-        let [litir, oidheamÀite] = PÀIRTEAN_EAIRMEAS[eairmeasÀite] || ["_"];
-        eairmeasDOM.textContent = litir;
-        eairmeasDOM.oidheamÀite = oidheamÀite;
-    }
-    let caillDOM = document.getElementById("eairmeas-caill");
-    caillDOM.style.visibility = "hidden";
-}
-
-
-function cuimsean_dèan() {
-    let naCuimseanDOM = document.getElementById("na-cuimsean");
-    for (let cuimse of DÀTA_GEAMA.cuimsean) {
-        let cuimseDOM = document.createElement("li");
-        cuimseDOM.id = `cuimse-${cuimse}`;
-        cuimseDOM.textContent = "_ ".repeat(cuimse.length);
-        naCuimseanDOM.appendChild(cuimseDOM);
+        function cuimsean_dèan() {
+            let naCuimseanDOM = document.getElementById("na-cuimsean");
+            for (let cuimse of DÀTA_GEAMA.cuimsean) {
+                let cuimseDOM = document.createElement("li");
+                cuimseDOM.id = `cuimse-${cuimse}`;
+                cuimseDOM.textContent = "_ ".repeat(cuimse.length);
+                naCuimseanDOM.appendChild(cuimseDOM);
         // FUTURE -- each letter is an element, so that we can hint letters
-    }
-}
-
-
-function meur_chlàr_tachairt(tachairt) {
-    if (tachairt.key === "Backspace") {
-        PÀIRTEAN_EAIRMEAS.pop();
-        oidheam_ùraich();
-        eairmeas_ùraich();
-        return;
-    }
-    if (tachairt.key === "Enter") {
-        eairmeas_tomhais();
-        return;
-    }
-    if (tachairt.key === "-") {
-        eairmeas_cuir_ris_litir("-");
-        return;
-    }
-    if (LITRICHEAN.includes(tachairt.key)) {
-        if (DÀTA_GEAMA.oidheam.includes(tachairt.key)) {
-            eairmeas_cuir_ris_litir(tachairt.key);
+            }
         }
-        return;
-    }
-}
 
 
-function geama_dèan() {
-    if (DÀTA_GEAMA.error) {
-        let cearrDOM = document.createElement("div");
-        cearrDOM.textContent = DÀTA_GEAMA.error;
-        cearrDOM.classList.add("font-sans", "bg-red-300", "text-red-800", "px-4");
-        document.getElementById("an-t-oidheam").appendChild(cearrDOM);
-        return;
-    }
-    oidheam_dèan();
-    eairmeas_dèan();
-    cuimsean_dèan();
-}
+        function meur_chlàr_tachairt(tachairt) {
+            if (tachairt.key === "Backspace") {
+                PÀIRTEAN_EAIRMEAS.pop();
+                oidheam_ùraich();
+                eairmeas_ùraich();
+                return;
+            }
+            if (tachairt.key === "Enter") {
+                eairmeas_tomhais();
+                return;
+            }
+            if (tachairt.key === "-") {
+                eairmeas_cuir_ris_litir("-");
+                return;
+            }
+            if (LITRICHEAN.includes(tachairt.key)) {
+                if (DÀTA_GEAMA.oidheam.includes(tachairt.key)) {
+                    eairmeas_cuir_ris_litir(tachairt.key);
+                }
+                return;
+            }
+        }
 
 
-document.addEventListener("DOMContentLoaded", geama_dèan);
-</script>
+        function geama_dèan() {
+            if (DÀTA_GEAMA.error) {
+                let cearrDOM = document.createElement("div");
+                cearrDOM.textContent = DÀTA_GEAMA.error;
+                cearrDOM.classList.add("font-sans", "bg-red-300", "text-red-800", "px-4");
+                document.getElementById("an-t-oidheam").appendChild(cearrDOM);
+                return;
+            }
+            oidheam_dèan();
+            eairmeas_dèan();
+            cuimsean_dèan();
+        }
+
+
+        document.addEventListener("DOMContentLoaded", geama_dèan);
+    </script>
 {% endblock %}

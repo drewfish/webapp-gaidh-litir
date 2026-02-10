@@ -13,6 +13,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "djhtml>=3.0.10",
     "pyright>=1.1.403",
     "ruff>=0.12.4",
 ]
