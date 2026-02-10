@@ -2,6 +2,7 @@
 name = "gaidh-litir"
 version = "0.1.1"
 description = "website of Gaelic tools and games"
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
