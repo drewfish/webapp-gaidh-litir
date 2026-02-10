@@ -39,6 +39,7 @@
                 let oidheamDOM = document.createElement("button");
                 oidheamDOM.id = `litir-oidheam-${oidheamÀite}`;
                 oidheamDOM.àite = oidheamÀite;
+                oidheamDOM.taghta = false;
                 if (litir === "-" && !tàthanDOM) {
                     oidheamDOM.classList.add("oidheam-tàthan");
                     tàthanDOM = oidheamDOM;
@@ -48,11 +49,13 @@
                 oidheam_litir_an_comas(oidheamDOM);
                 antOidheamDOM.appendChild(oidheamDOM);
                 oidheamDOM.addEventListener("click", () => {
-                    eirmeas_cuir_ris_litir(litir, oidheamÀite)
+                    eirmeas_litir_gnìomhaich(litir, oidheamÀite);
                 });
+                /* TODO -- do we really need this, or is "click" enough ?
                 oidheamDOM.addEventListener("touchstart", () => {
-                    eirmeas_cuir_ris_litir(litir, oidheamÀite)
+                    eirmeas_litir_gnìomhaich(litir, oidheamÀite);
                 });
+                */
             }
             if (! tàthanDOM) {
                 let tàthanDOM = document.createElement("button");
@@ -64,21 +67,21 @@
                 tàthanDOM.classList.add("ml-2", "font-normal");
                 antOidheamDOM.appendChild(tàthanDOM);
                 tàthanDOM.addEventListener("click", () => {
-                    eirmeas_cuir_ris_litir("-");
+                    eirmeas_litir_gnìomhaich("-");
                 });
             }
         }
 
 
         function oidheam_litir_an_comas(litirDOM) {
-            litirDOM.disabled = false;
+            litirDOM.taghta = false;
             litirDOM.classList.add("geama-oidheam-enabled");
             litirDOM.classList.remove("geama-oidheam-disabled");
         }
 
 
         function oidheam_litir_à_comas(litirDOM) {
-            litirDOM.disabled = true;
+            litirDOM.false = true;
             litirDOM.classList.remove("geama-oidheam-enabled");
             litirDOM.classList.add("geama-oidheam-disabled");
         }
@@ -149,11 +152,13 @@
                 oidheam_ùraich();
                 eirmeas_ùraich();
             });
+            /* TODO -- do we really need this, or is "click" enough ?
             caillDOM.addEventListener("touchstart", () => {
                 PÀIRTEAN_EIRMEAS = [];
                 oidheam_ùraich();
                 eirmeas_ùraich();
             });
+            */
             antEairmeasDOM.appendChild(caillDOM);
 
             tomhaisDOM = document.getElementById("tomhais");
@@ -173,6 +178,29 @@
             litirDOM.disabled = true;
             litirDOM.classList.remove("geama-eirmeas-enabled");
             litirDOM.classList.add("geama-eirmeas-disabled");
+        }
+
+
+        function eirmeas_litir_gnìomhaich(litir, oidheamÀite) {
+            if (litir === "-") {
+                if (eirmeas_tàthan_mu_dheireadh()) {
+                    PÀIRTEAN_EIRMEAS.pop();
+                } else {
+                    eirmeas_cuir_ris_litir(litir, oidheamÀite)
+                }
+                oidheam_ùraich();
+                eirmeas_ùraich();
+                return;
+            }
+            for (const [i, clàr] of PÀIRTEAN_EIRMEAS.entries()) {
+                if (clàr[1] === oidheamÀite) {
+                    PÀIRTEAN_EIRMEAS.splice(i, 1);
+                    oidheam_ùraich();
+                    eirmeas_ùraich();
+                    return;
+                }
+            }
+            eirmeas_cuir_ris_litir(litir, oidheamÀite)
         }
 
 
