@@ -15,7 +15,7 @@
                 <div id="an-t-oidheam" class="text-lg font-mono"></div>
                 <div>
                     <span id="an-t-eirmeas" class="text-lg font-mono"></span>
-                    <button id="eirmeas-caill" class="mr-3 geama-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
+                    <button id="eirmeas-caill" class="mr-2 geama-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
                     <button id="tomhais" class="geama-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     tàthanDOM = oidheamDOM;
                 }
                 oidheamDOM.textContent = litir;
-                oidheamDOM.classList.add("mr-2", "geama-button", "font-bold");
+                oidheamDOM.classList.add("mr-1", "geama-button", "font-bold");
                 oidheam_litir_an_comas(oidheamDOM);
                 antOidheamDOM.appendChild(oidheamDOM);
                 oidheamDOM.addEventListener("click", () => {
@@ -133,7 +133,7 @@
                 eirmeasDOM.id = `litir-eirmeas-${eirmeasÀite}`;
                 eirmeasDOM.àite = eirmeasÀite;
                 eirmeasDOM.textContent = "_";
-                eirmeasDOM.classList.add("mr-2", "geama-button", "font-bold");
+                eirmeasDOM.classList.add("mr-1", "geama-button", "font-bold");
                 antEairmeasDOM.appendChild(eirmeasDOM);
                 eirmeasDOM.addEventListener("click", () => {
                     PÀIRTEAN_EIRMEAS.splice(eirmeasÀite, 1);

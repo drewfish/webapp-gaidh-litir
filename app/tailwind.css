@@ -3,15 +3,15 @@
 .geama-button {
     @apply px-3 py-1 rounded-lg shadow-md
 }
-.geama-eirmeas-enabled {
-    @apply text-white bg-green-600 hover:bg-green-800
-}
-.geama-eirmeas-disabled {
-    @apply text-green-200 bg-green-600/75
-}
 .geama-oidheam-enabled {
-    @apply text-white bg-blue-600 hover:bg-blue-800
+    @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-800
 }
 .geama-oidheam-disabled {
-    @apply text-blue-200 bg-blue-600/75
+    @apply text-blue-800 bg-blue-600/75
+}
+.geama-eirmeas-enabled {
+    @apply text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600
+}
+.geama-eirmeas-disabled {
+    @apply text-green-100 bg-green-100
 }
