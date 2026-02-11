@@ -325,6 +325,7 @@
         function staid_a_gheama_leugh() {
             if (ATH_SHUIDHICH_GEAMA === "true") {
                 localStorage.removeItem("staid a' gheama");
+                window.location.href = window.location.href.split("?")[0];
                 return;
             }
             let staidAmh = localStorage.getItem("staid a' gheama");
