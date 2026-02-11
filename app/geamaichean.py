@@ -3,7 +3,7 @@ import datetime
 import json
 import os.path
 import zoneinfo
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from .dependencies import DATA_DIR, RendererDep
 
@@ -11,7 +11,12 @@ router = APIRouter()
 
 
 @router.get("/liosta-fhaclan")
-async def liosta_fhaclan(render: RendererDep) -> Any:
+async def liosta_fhaclan(render: RendererDep, request: Request) -> Any:
+    ath_shuidhich: str = "false"
+    if "reset" in request.query_params:
+        ath_shuidhich = "true"
+    if "ath-shuidhich" in request.query_params:
+        ath_shuidhich = "true"
     game_data: Any = {
         "error": "failed to load game data",
     }
@@ -27,4 +32,9 @@ async def liosta_fhaclan(render: RendererDep) -> Any:
     else:
         print("MISSING game data file --", game_file)
     cuimsean = game_data.pop("cuimsean")
-    return render("geama/liosta-fhaclan.html", game_data=game_data, cuimsean=cuimsean)
+    return render(
+        "geama/liosta-fhaclan.html",
+        game_data=game_data,
+        cuimsean=cuimsean,
+        ath_shuidhich_geama=ath_shuidhich,
+    )

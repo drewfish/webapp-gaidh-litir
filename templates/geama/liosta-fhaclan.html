@@ -22,9 +22,9 @@
         </div>
         <div class="max-w-96 bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
             <div id="na-cuimsean" class="font-mono">
-{%- for cuimse in cuimsean %}
-                <a id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</a>
-{%- endfor %}
+                {%- for cuimse in cuimsean %}
+                    <a id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</a>
+                {%- endfor %}
             </div>
         </div>
     </div>
@@ -32,7 +32,9 @@
     <script type="text/javascript">
         let LITRICHEAN = "aàbcdeèfghiìlmnoòprstuù";
         let DÀTA_GEAMA = {{ game_data | json | safe }};
+        let ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
         let PÀIRTEAN_EIRMEAS = [];
+        let STAID_A_GHEAMA = { cuimsean: {} };
 
 
         function cuimse_an_comas(cuimse, cuimseDOM) {
@@ -45,6 +47,7 @@
             cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse}&slang=gd&wholeword=true`);
             cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
             cuimseDOM.setAttribute("target", "_blank");
+            staid_a_gheama_sgrìobh(cuimse);
         }
 
 
@@ -319,6 +322,39 @@
         }
 
 
+        function staid_a_gheama_leugh() {
+            if (ATH_SHUIDHICH_GEAMA === "true") {
+                localStorage.removeItem("staid a' gheama");
+                return;
+            }
+            let staidAmh = localStorage.getItem("staid a' gheama");
+            if (! staidAmh) {
+                return;
+            }
+            let staid = JSON.parse(staidAmh);
+            if (staid.oidheam !== DÀTA_GEAMA.oidheam) {
+                localStorage.removeItem("staid a' gheama");
+                return;
+            }
+            for (let cuimse in staid.cuimsean) {
+                let cuimseDOM = document.getElementById(`cuimse-${cuimse}`);
+                if (cuimseDOM) {
+                    cuimse_an_comas(cuimse, cuimseDOM);
+                }
+            }
+            STAID_A_GHEAMA = staid;
+            // FUTURE -- check for game completion
+        }
+
+
+        function staid_a_gheama_sgrìobh(cuimse) {
+            STAID_A_GHEAMA.oidheam = DÀTA_GEAMA.oidheam;
+            STAID_A_GHEAMA.cuimsean[cuimse] = 1;
+            let staidAmh = JSON.stringify(STAID_A_GHEAMA);
+            localStorage.setItem("staid a' gheama", staidAmh);
+        }
+
+
         function geama_dèan() {
             if (DÀTA_GEAMA.error) {
                 let cearrDOM = document.createElement("div");
@@ -330,6 +366,7 @@
             oidheam_dèan();
             eirmeas_dèan();
             meur_chlàr_an_comas();
+            staid_a_gheama_leugh();
         }
 
 
