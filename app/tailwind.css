@@ -18,3 +18,6 @@
 .geama-cuimse-found {
     @apply font-bold text-green-900 bg-green-200
 }
+#geama-comhailteach {
+    @apply px-4 py-1 rounded-lg align-middle text-lg font-bold text-green-950 bg-green-200
+}

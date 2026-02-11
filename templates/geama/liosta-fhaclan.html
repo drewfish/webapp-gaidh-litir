@@ -13,7 +13,7 @@
             </div>
             <div class="max-w-96 bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
                 <div id="an-t-oidheam" class="text-lg font-mono"></div>
-                <div>
+                <div id="ion-chur">
                     <span id="an-t-eirmeas" class="text-lg font-mono"></span>
                     <button id="eirmeas-caill" class="mr-2 geama-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
                     <button id="tomhais" class="geama-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
@@ -35,6 +35,7 @@
         let ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
         let PÀIRTEAN_EIRMEAS = [];
         let STAID_A_GHEAMA = { cuimsean: {} };
+        let GEAMA_COMHAILTEACH = false;
 
 
         function cuimse_an_comas(cuimse, cuimseDOM) {
@@ -189,6 +190,9 @@
 
 
         function eirmeas_litir_gnìomhaich(litir, oidheamÀite) {
+            if (GEAMA_COMHAILTEACH) {
+                return;
+            }
             if (litir === "-") {
                 if (eirmeas_tàthan_mu_dheireadh()) {
                     PÀIRTEAN_EIRMEAS.pop();
@@ -258,7 +262,7 @@
             PÀIRTEAN_EIRMEAS = [];
             oidheam_ùraich();
             eirmeas_ùraich();
-            // FUTURE -- check for game completion
+            geama_comhailteach();
         }
 
 
@@ -280,6 +284,9 @@
 
 
         function meur_chlàr_tachairt(tachairt) {
+            if (GEAMA_COMHAILTEACH) {
+                return;
+            }
             if (tachairt.key === "Backspace") {
                 tachairt.stopPropagation();
                 tachairt.preventDefault();
@@ -344,7 +351,7 @@
                 }
             }
             STAID_A_GHEAMA = staid;
-            // FUTURE -- check for game completion
+            geama_comhailteach();
         }
 
 
@@ -353,6 +360,26 @@
             STAID_A_GHEAMA.cuimsean[cuimse] = 1;
             let staidAmh = JSON.stringify(STAID_A_GHEAMA);
             localStorage.setItem("staid a' gheama", staidAmh);
+        }
+
+
+        function geama_comhailteach() {
+            let cunntadh = Object.keys(STAID_A_GHEAMA.cuimsean).length;
+            if (cunntadh !== DÀTA_GEAMA.cunntadh_cuimsean) {
+                return;
+            }
+            GEAMA_COMHAILTEACH = true;
+            let ionChurDOM = document.getElementById("ion-chur");
+            let àrd = window.getComputedStyle(ionChurDOM).height;
+            let comhailteachDOM = document.createElement("div");
+            comhailteachDOM.id = "geama-comhailteach";
+            comhailteachDOM.textContent = "sin thu!";
+            comhailteachDOM.style.height = àrd;
+            ionChurDOM.replaceWith(comhailteachDOM);
+            for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
+                let litirDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
+                oidheam_litir_à_comas(litirDOM);
+            }
         }
 
 
