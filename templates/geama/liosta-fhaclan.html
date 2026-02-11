@@ -157,6 +157,12 @@
 
             tomhaisDOM = document.getElementById("tomhais");
             tomhaisDOM.addEventListener("click", eirmeas_tomhais);
+            document.addEventListener("keydown", (tachairt) => {
+                if (tachairt.target.tagName === "BUTTON") {
+                    // when oidheam litir has focus, hitting <Enter> causes a click
+                    tachairt.preventDefault();
+                }
+            });
             document.addEventListener("keyup", meur_chlàr_tachairt);
         }
 
