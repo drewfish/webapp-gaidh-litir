@@ -271,21 +271,29 @@
 
         function meur_chlàr_tachairt(tachairt) {
             if (tachairt.key === "Backspace") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
                 PÀIRTEAN_EIRMEAS.pop();
                 oidheam_ùraich();
                 eirmeas_ùraich();
                 return;
             }
             if (tachairt.key === "Enter") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
                 eirmeas_tomhais();
                 return;
             }
             if (tachairt.key === "-") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
                 eirmeas_cuir_ris_litir("-");
                 return;
             }
             if (LITRICHEAN.includes(tachairt.key)) {
                 if (DÀTA_GEAMA.oidheam.includes(tachairt.key)) {
+                    tachairt.stopPropagation();
+                    tachairt.preventDefault();
                     eirmeas_cuir_ris_litir(tachairt.key);
                 }
                 return;
