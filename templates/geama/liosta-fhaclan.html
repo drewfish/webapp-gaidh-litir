@@ -21,11 +21,11 @@
             </div>
         </div>
         <div class="max-w-96 bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
-            <ul id="na-cuimsean" class="font-mono">
+            <div id="na-cuimsean" class="font-mono">
 {%- for cuimse in cuimsean %}
-                <li id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</li>
+                <a id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</a>
 {%- endfor %}
-            </ul>
+            </div>
         </div>
     </div>
 
@@ -41,6 +41,9 @@
                 litirDOM.textContent = litir;
             }
             cuimseDOM.classList.add("geama-cuimse-found");
+            cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse}&slang=gd&wholeword=true`);
+            cuimseDOM.setAttribute("target", "_blank");
+            cuimseDOM.setAttribute("rel", "noopener noreferrer");
         }
 
 
@@ -162,10 +165,10 @@
             });
             antEairmeasDOM.appendChild(caillDOM);
 
-            tomhaisDOM = document.getElementById("tomhais");
+            let tomhaisDOM = document.getElementById("tomhais");
             tomhaisDOM.addEventListener("click", eirmeas_tomhais);
             document.addEventListener("keydown", (tachairt) => {
-                if (tachairt.target.tagName === "BUTTON") {
+                if (tachairt.key === "Enter") {
                     // when oidheam litir has focus, hitting <Enter> causes a click
                     tachairt.preventDefault();
                 }
@@ -242,6 +245,9 @@
             let eirmeas = "";
             for (const [litir] of PÀIRTEAN_EIRMEAS) {
                 eirmeas += litir;
+            }
+            if (! eirmeas) {
+                return;
             }
             let cuimseDOM = document.getElementById(`cuimse-${eirmeas}`);
             if (! cuimseDOM) {
