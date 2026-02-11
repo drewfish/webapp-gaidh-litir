@@ -21,7 +21,13 @@
             </div>
         </div>
         <div class="bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
-            <ul id="na-cuimsean" class="font-mono"></ul>
+            <ul id="na-cuimsean" class="font-mono">
+{%- for cuimse in cuimsean %}
+                <li id="cuimse-{{cuimse}}" class="">
+{%- for litir in cuimse %}_ {% endfor -%}
+                </li>
+{%- endfor %}
+            </ul>
         </div>
     </div>
 
@@ -257,18 +263,6 @@
         }
 
 
-        function cuimsean_dèan() {
-            let naCuimseanDOM = document.getElementById("na-cuimsean");
-            for (let cuimse of DÀTA_GEAMA.cuimsean) {
-                let cuimseDOM = document.createElement("li");
-                cuimseDOM.id = `cuimse-${cuimse}`;
-                cuimseDOM.textContent = "_ ".repeat(cuimse.length);
-                naCuimseanDOM.appendChild(cuimseDOM);
-                // FUTURE -- each letter is an element, so that we can hint letters
-            }
-        }
-
-
         function meur_chlàr_tachairt(tachairt) {
             if (tachairt.key === "Backspace") {
                 tachairt.stopPropagation();
@@ -311,7 +305,6 @@
             }
             oidheam_dèan();
             eirmeas_dèan();
-            cuimsean_dèan();
         }
 
 

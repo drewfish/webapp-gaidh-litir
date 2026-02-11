@@ -26,4 +26,5 @@ async def liosta_fhaclan(render: RendererDep) -> Any:
             game_data = json.load(file)
     else:
         print("MISSING game data file --", game_file)
-    return render("geama/liosta-fhaclan.html", game_data=game_data)
+    cuimsean = game_data.pop("cuimsean")
+    return render("geama/liosta-fhaclan.html", game_data=game_data, cuimsean=cuimsean)
