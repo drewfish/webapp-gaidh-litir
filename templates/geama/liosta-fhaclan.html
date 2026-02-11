@@ -41,9 +41,10 @@
                 litirDOM.textContent = litir;
             }
             cuimseDOM.classList.add("geama-cuimse-found");
+            cuimseDOM.setAttribute("alt", cuimse);
             cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse}&slang=gd&wholeword=true`);
+            cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
             cuimseDOM.setAttribute("target", "_blank");
-            cuimseDOM.setAttribute("rel", "noopener noreferrer");
         }
 
 
@@ -52,19 +53,19 @@
             let tàthanDOM = undefined;
             for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
                 let litir = DÀTA_GEAMA.oidheam[oidheamÀite];
-                let oidheamDOM = document.createElement("button");
-                oidheamDOM.id = `litir-oidheam-${oidheamÀite}`;
-                oidheamDOM.àite = oidheamÀite;
-                oidheamDOM.taghta = false;
+                let litirDOM = document.createElement("button");
+                litirDOM.id = `litir-oidheam-${oidheamÀite}`;
+                litirDOM.àite = oidheamÀite;
+                litirDOM.taghta = false;
                 if (litir === "-" && !tàthanDOM) {
-                    oidheamDOM.classList.add("oidheam-tàthan");
-                    tàthanDOM = oidheamDOM;
+                    litirDOM.classList.add("oidheam-tàthan");
+                    tàthanDOM = litirDOM;
                 }
-                oidheamDOM.textContent = litir;
-                oidheamDOM.classList.add("mr-1", "geama-button", "font-bold");
-                oidheam_litir_an_comas(oidheamDOM);
-                antOidheamDOM.appendChild(oidheamDOM);
-                oidheamDOM.addEventListener("click", () => {
+                litirDOM.textContent = litir;
+                litirDOM.classList.add("mr-1", "geama-button", "font-bold");
+                oidheam_litir_an_comas(litirDOM);
+                antOidheamDOM.appendChild(litirDOM);
+                litirDOM.addEventListener("click", () => {
                     eirmeas_litir_gnìomhaich(litir, oidheamÀite);
                 });
             }
@@ -92,7 +93,7 @@
 
 
         function oidheam_litir_à_comas(litirDOM) {
-            litirDOM.false = true;
+            litirDOM.taghta = true;
             litirDOM.classList.remove("geama-oidheam-enabled");
             litirDOM.classList.add("geama-oidheam-disabled");
         }
@@ -106,15 +107,15 @@
                 return document.getElementById(`litir-oidheam-${oidheamÀite}`);
             }
             for (oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-                let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-                if (! oidheamDOM) {
+                let litirDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
+                if (! litirDOM) {
                     continue;
                 }
-                if (oidheamDOM.disabled) {
+                if (litirDOM.taghta) {
                     continue;
                 }
-                if (oidheamDOM.textContent === litir) {
-                    return oidheamDOM;
+                if (litirDOM.textContent === litir) {
+                    return litirDOM;
                 }
             }
             return undefined;
@@ -123,14 +124,14 @@
 
         function oidheam_ùraich() {
             for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-                let oidheamDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-                oidheam_litir_an_comas(oidheamDOM);
+                let litirDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
+                oidheam_litir_an_comas(litirDOM);
             }
             let tàthanDOM = oidheam_lorg_litirDOM("-");
             oidheam_litir_an_comas(tàthanDOM);
             for (const [litir, oidheamÀite] of PÀIRTEAN_EIRMEAS) {
-                let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
-                oidheam_litir_à_comas(oidheamDOM);
+                let litirDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
+                oidheam_litir_à_comas(litirDOM);
             }
             if (eirmeas_tàthan_mu_dheireadh()) {
                 oidheam_litir_à_comas(tàthanDOM);
@@ -141,20 +142,20 @@
 
 
         function eirmeas_dèan() {
-            let antEairmeasDOM = document.getElementById("an-t-eirmeas");
+            let antEirmeasDOM = document.getElementById("an-t-eirmeas");
             for (let eirmeasÀite = 0; eirmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eirmeasÀite++) {
-                let eirmeasDOM = document.createElement("button");
-                eirmeasDOM.id = `litir-eirmeas-${eirmeasÀite}`;
-                eirmeasDOM.àite = eirmeasÀite;
-                eirmeasDOM.textContent = "_";
-                eirmeasDOM.classList.add("mr-1", "geama-button", "font-bold");
-                antEairmeasDOM.appendChild(eirmeasDOM);
-                eirmeasDOM.addEventListener("click", () => {
+                let litirDOM = document.createElement("button");
+                litirDOM.id = `litir-eirmeas-${eirmeasÀite}`;
+                litirDOM.àite = eirmeasÀite;
+                litirDOM.textContent = "_";
+                litirDOM.classList.add("mr-1", "geama-button", "font-bold");
+                antEirmeasDOM.appendChild(litirDOM);
+                litirDOM.addEventListener("click", () => {
                     PÀIRTEAN_EIRMEAS.splice(eirmeasÀite, 1);
                     oidheam_ùraich();
                     eirmeas_ùraich();
                 });
-                eirmeas_litir_à_comas(eirmeasDOM);
+                eirmeas_litir_à_comas(litirDOM);
             }
             let caillDOM = document.getElementById("eirmeas-caill");
             caillDOM.style.visibility = "hidden";
@@ -163,17 +164,10 @@
                 oidheam_ùraich();
                 eirmeas_ùraich();
             });
-            antEairmeasDOM.appendChild(caillDOM);
+            antEirmeasDOM.appendChild(caillDOM);
 
             let tomhaisDOM = document.getElementById("tomhais");
             tomhaisDOM.addEventListener("click", eirmeas_tomhais);
-            document.addEventListener("keydown", (tachairt) => {
-                if (tachairt.key === "Enter") {
-                    // when oidheam litir has focus, hitting <Enter> causes a click
-                    tachairt.preventDefault();
-                }
-            });
-            document.addEventListener("keyup", meur_chlàr_tachairt);
         }
 
 
@@ -232,9 +226,9 @@
                 eirmeas_ùraich();
                 return;
             }
-            let oidheamDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
-            if (oidheamDOM) {
-                PÀIRTEAN_EIRMEAS.push([litir, oidheamDOM.àite]);
+            let litirDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
+            if (litirDOM) {
+                PÀIRTEAN_EIRMEAS.push([litir, litirDOM.àite]);
                 oidheam_ùraich();
                 eirmeas_ùraich();
             }
@@ -261,20 +255,20 @@
             PÀIRTEAN_EIRMEAS = [];
             oidheam_ùraich();
             eirmeas_ùraich();
+            // FUTURE -- check for game completion
         }
 
 
         function eirmeas_ùraich() {
-            let antEairmeasDOM = document.getElementById("an-t-eirmeas");
             for (let eirmeasÀite = 0; eirmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eirmeasÀite++) {
-                let eirmeasDOM = document.getElementById(`litir-eirmeas-${eirmeasÀite}`);
+                let litirDOM = document.getElementById(`litir-eirmeas-${eirmeasÀite}`);
                 let [litir, oidheamÀite] = PÀIRTEAN_EIRMEAS[eirmeasÀite] || ["_"];
-                eirmeasDOM.textContent = litir;
-                eirmeasDOM.oidheamÀite = oidheamÀite;
+                litirDOM.textContent = litir;
+                litirDOM.oidheamÀite = oidheamÀite;
                 if (litir === "_") {
-                    eirmeas_litir_à_comas(eirmeasDOM);
+                    eirmeas_litir_à_comas(litirDOM);
                 } else {
-                    eirmeas_litir_an_comas(eirmeasDOM);
+                    eirmeas_litir_an_comas(litirDOM);
                 }
             }
             let caillDOM = document.getElementById("eirmeas-caill");
@@ -314,6 +308,17 @@
         }
 
 
+        function meur_chlàr_an_comas() {
+            document.addEventListener("keydown", (tachairt) => {
+                if (tachairt.key === "Enter") {
+                    // when oidheam litir has focus, hitting <Enter> would cause a click
+                    tachairt.preventDefault();
+                }
+            });
+            document.addEventListener("keyup", meur_chlàr_tachairt);
+        }
+
+
         function geama_dèan() {
             if (DÀTA_GEAMA.error) {
                 let cearrDOM = document.createElement("div");
@@ -324,6 +329,7 @@
             }
             oidheam_dèan();
             eirmeas_dèan();
+            meur_chlàr_an_comas();
         }
 
 
