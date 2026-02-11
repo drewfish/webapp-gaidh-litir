@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Liosta-Fhaclan{% endblock %}
 {% block content %}
-    <div class="grid md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 gap-1">
         <div>
             <div id="instructions-en">
                 Find all the words using the provided letters.
                 <ul class="list-inside list-disc">
                     <li>You can only use each letter once.</li>
-                    <li>You can use a hyphen as many times as you want.</li>
-                    <li>Words have to be at least 4 letters (or hyphens) long.</li>
+                    <li>You can use a hyphen multiple times.</li>
+                    <li>Words have to be at least 4 long.</li>
                 </ul>
             </div>
-            <div class="bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
+            <div class="max-w-96 bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
                 <div id="an-t-oidheam" class="text-lg font-mono"></div>
                 <div>
                     <span id="an-t-eirmeas" class="text-lg font-mono"></span>
@@ -20,12 +20,10 @@
                 </div>
             </div>
         </div>
-        <div class="bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
+        <div class="max-w-96 bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
             <ul id="na-cuimsean" class="font-mono">
 {%- for cuimse in cuimsean %}
-                <li id="cuimse-{{cuimse}}" class="">
-{%- for litir in cuimse %}_ {% endfor -%}
-                </li>
+                <li id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</li>
 {%- endfor %}
             </ul>
         </div>
@@ -35,6 +33,15 @@
         let LITRICHEAN = "aàbcdeèfghiìlmnoòprstuù";
         let DÀTA_GEAMA = {{ game_data | json | safe }};
         let PÀIRTEAN_EIRMEAS = [];
+
+
+        function cuimse_an_comas(cuimse, cuimseDOM) {
+            for (let [i, litir] of cuimse.split("").entries()) {
+                let litirDOM = document.getElementById(`cuimse-${cuimse}-${i}`);
+                litirDOM.textContent = litir;
+            }
+            cuimseDOM.classList.add("geama-cuimse-found");
+        }
 
 
         function oidheam_dèan() {
@@ -242,8 +249,8 @@
                 caillDOM.style.visibility = "visible";
                 return;
             }
-            cuimseDOM.textContent = eirmeas.split("").join(" ");
             cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+            cuimse_an_comas(eirmeas, cuimseDOM);
             // FUTURE -- bold recenlty-chosen cuimse (but only that one)
             PÀIRTEAN_EIRMEAS = [];
             oidheam_ùraich();

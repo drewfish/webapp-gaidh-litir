@@ -15,3 +15,6 @@
 .geama-eirmeas-disabled {
     @apply text-green-100 bg-green-100
 }
+.geama-cuimse-found {
+    @apply font-bold text-green-900 bg-green-200
+}
