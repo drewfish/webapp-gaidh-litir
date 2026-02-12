@@ -22,7 +22,7 @@
         </div>
         <div class="max-w-96 bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
             <div id="na-cuimsean" class="font-mono">
-                {%- for cuimse in cuimsean %}
+                {%- for cuimse in game_data.cuimsean %}
                     <a id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</a>
                 {%- endfor %}
             </div>
@@ -30,11 +30,11 @@
     </div>
 
     <script type="text/javascript">
-        let LITRICHEAN = "aàbcdeèfghiìlmnoòprstuù";
         let DÀTA_GEAMA = {{ game_data | json | safe }};
         let ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
         let PÀIRTEAN_EIRMEAS = [];
         let STAID_A_GHEAMA = { cuimsean: {} };
+        let LITRICHEAN_ANNS_NA_CUIMSEAN = {};
         let GEAMA_COMHAILTEACH = false;
         const STRÀCADH = { "a": "à", "e": "è", "i": "ì", "o": "ò", "u": "ù" }
 
@@ -74,33 +74,45 @@
                     eirmeas_litir_gnìomhaich(litir, oidheamÀite);
                 });
             }
-            if (! tàthanDOM) {
-                let tàthanDOM = document.createElement("button");
-                tàthanDOM.id = "oidheam-tàthan";
-                tàthanDOM.àite = "-";
-                tàthanDOM.classList.add("oidheam-tàthan", "font-bold");
-                oidheam_litir_an_comas(tàthanDOM);
-                tàthanDOM.textContent = "-";
-                tàthanDOM.classList.add("ml-2", "font-normal");
-                antOidheamDOM.appendChild(tàthanDOM);
-                tàthanDOM.addEventListener("click", () => {
-                    eirmeas_litir_gnìomhaich("-");
-                });
+            if (!tàthanDOM && LITRICHEAN_ANNS_NA_CUIMSEAN["-"]) {
+                let seTàthanAthann = false;
+                for (let cuimse in DÀTA_GEAMA.cuimsean) {
+                    if (cuimse.includes("-")) {
+                        seTàthanAthann = true;
+                    }
+                }
+                if (seTàthanAthann) {
+                    let tàthanDOM = document.createElement("button");
+                    tàthanDOM.id = "oidheam-tàthan";
+                    tàthanDOM.àite = "-";
+                    tàthanDOM.classList.add("oidheam-tàthan", "font-bold");
+                    oidheam_litir_an_comas(tàthanDOM);
+                    tàthanDOM.textContent = "-";
+                    tàthanDOM.classList.add("ml-2", "font-normal");
+                    antOidheamDOM.appendChild(tàthanDOM);
+                    tàthanDOM.addEventListener("click", () => {
+                        eirmeas_litir_gnìomhaich("-");
+                    });
+                }
             }
         }
 
 
         function oidheam_litir_an_comas(litirDOM) {
-            litirDOM.taghta = false;
-            litirDOM.classList.add("geama-oidheam-enabled");
-            litirDOM.classList.remove("geama-oidheam-disabled");
+            if (litirDOM) {
+                litirDOM.taghta = false;
+                litirDOM.classList.add("geama-oidheam-enabled");
+                litirDOM.classList.remove("geama-oidheam-disabled");
+            }
         }
 
 
         function oidheam_litir_à_comas(litirDOM) {
-            litirDOM.taghta = true;
-            litirDOM.classList.remove("geama-oidheam-enabled");
-            litirDOM.classList.add("geama-oidheam-disabled");
+            if (litirDOM) {
+                litirDOM.taghta = true;
+                litirDOM.classList.remove("geama-oidheam-enabled");
+                litirDOM.classList.add("geama-oidheam-disabled");
+            }
         }
 
 
@@ -253,7 +265,7 @@
                     }
                     return;
                 }
-                let seOidheamLeNeoStràcAthann = oidheam.includes(litir);
+                let seOidheamLeNeoStràcAthann = oidheam_lorg_litirDOM(litir);
                 if (!seOidheamLeNeoStràcAthann) {
                     // non-stràc isn't available, so add stràc version instead
                     let litirLeStràc = STRÀCADH[litir];
@@ -334,18 +346,10 @@
                 eirmeas_tomhais();
                 return;
             }
-            if (tachairt.key === "-") {
+            if (LITRICHEAN_ANNS_NA_CUIMSEAN[tachairt.key] || "aeiou".includes(tachairt.key)) {
                 tachairt.stopPropagation();
                 tachairt.preventDefault();
-                eirmeas_cuir_ris_litir("-");
-                return;
-            }
-            if (LITRICHEAN.includes(tachairt.key)) {
-                if (DÀTA_GEAMA.oidheam.includes(tachairt.key) || "aeiou".includes(tachairt.key)) {
-                    tachairt.stopPropagation();
-                    tachairt.preventDefault();
-                    eirmeas_cuir_ris_litir(tachairt.key);
-                }
+                eirmeas_cuir_ris_litir(tachairt.key);
                 return;
             }
         }
@@ -398,7 +402,7 @@
 
         function geama_comhailteach() {
             let cunntadh = Object.keys(STAID_A_GHEAMA.cuimsean).length;
-            if (cunntadh !== DÀTA_GEAMA.cunntadh_cuimsean) {
+            if (cunntadh !== DÀTA_GEAMA.cuimsean.length) {
                 return;
             }
             GEAMA_COMHAILTEACH = true;
@@ -423,6 +427,11 @@
                 cearrDOM.classList.add("font-sans", "bg-red-300", "text-red-800", "px-4");
                 document.getElementById("an-t-oidheam").appendChild(cearrDOM);
                 return;
+            }
+            for (let cuimse of DÀTA_GEAMA.cuimsean) {
+                for (let litir of cuimse) {
+                    LITRICHEAN_ANNS_NA_CUIMSEAN[litir] = true;
+                }
             }
             oidheam_dèan();
             eirmeas_dèan();
