@@ -36,6 +36,7 @@
         let PÀIRTEAN_EIRMEAS = [];
         let STAID_A_GHEAMA = { cuimsean: {} };
         let GEAMA_COMHAILTEACH = false;
+        const STRÀCADH = { "a": "à", "e": "è", "i": "ì", "o": "ò", "u": "ù" }
 
 
         function cuimse_an_comas(cuimse, cuimseDOM) {
@@ -137,7 +138,7 @@
                 let litirDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
                 oidheam_litir_à_comas(litirDOM);
             }
-            if (eirmeas_tàthan_mu_dheireadh()) {
+            if (eirmeas_litir_mu_dheireadh() === "-") {
                 oidheam_litir_à_comas(tàthanDOM);
             } else {
                 oidheam_litir_an_comas(tàthanDOM);
@@ -194,7 +195,7 @@
                 return;
             }
             if (litir === "-") {
-                if (eirmeas_tàthan_mu_dheireadh()) {
+                if (eirmeas_litir_mu_dheireadh() === "-") {
                     PÀIRTEAN_EIRMEAS.pop();
                 } else {
                     eirmeas_cuir_ris_litir(litir, oidheamÀite)
@@ -215,8 +216,11 @@
         }
 
 
-        function eirmeas_tàthan_mu_dheireadh() {
-            return PÀIRTEAN_EIRMEAS.length && PÀIRTEAN_EIRMEAS.at(-1)[0] === "-";
+        function eirmeas_litir_mu_dheireadh() {
+            if (! PÀIRTEAN_EIRMEAS.length) {
+                return "";
+            }
+            return PÀIRTEAN_EIRMEAS.at(-1)[0];
         }
 
 
@@ -225,13 +229,42 @@
                 return;
             }
             if (litir === "-") {
-                if (eirmeas_tàthan_mu_dheireadh()) {
+                if (eirmeas_litir_mu_dheireadh() === "-") {
                     return;
                 }
                 PÀIRTEAN_EIRMEAS.push(["-", undefined]);
                 oidheam_ùraich();
                 eirmeas_ùraich();
                 return;
+            }
+            let seFuaimreagGunStràcAthann = "aeiou".includes(litir);
+            let oidheam = DÀTA_GEAMA.oidheam;
+            let seOidheamLeStràcAthann = oidheam.includes(STRÀCADH[litir]);
+            if (seFuaimreagGunStràcAthann && seOidheamLeStràcAthann) {
+                if (eirmeas_litir_mu_dheireadh() === litir) {
+                    // convert last letter of eirmeas to stràc
+                    let litirLeStràc = STRÀCADH[litir];
+                    let litirDOM = oidheam_lorg_litirDOM(litirLeStràc, oidheamÀite);
+                    if (litirDOM) {
+                        PÀIRTEAN_EIRMEAS.pop();
+                        PÀIRTEAN_EIRMEAS.push([litirLeStràc, litirDOM.àite]);
+                        oidheam_ùraich();
+                        eirmeas_ùraich();
+                    }
+                    return;
+                }
+                let seOidheamLeNeoStràcAthann = oidheam.includes(litir);
+                if (!seOidheamLeNeoStràcAthann) {
+                    // non-stràc isn't available, so add stràc version instead
+                    let litirLeStràc = STRÀCADH[litir];
+                    let litirDOM = oidheam_lorg_litirDOM(litirLeStràc, oidheamÀite);
+                    if (litirDOM) {
+                        PÀIRTEAN_EIRMEAS.push([litirLeStràc, litirDOM.àite]);
+                        oidheam_ùraich();
+                        eirmeas_ùraich();
+                    }
+                    return;
+                }
             }
             let litirDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
             if (litirDOM) {
@@ -308,7 +341,7 @@
                 return;
             }
             if (LITRICHEAN.includes(tachairt.key)) {
-                if (DÀTA_GEAMA.oidheam.includes(tachairt.key)) {
+                if (DÀTA_GEAMA.oidheam.includes(tachairt.key) || "aeiou".includes(tachairt.key)) {
                     tachairt.stopPropagation();
                     tachairt.preventDefault();
                     eirmeas_cuir_ris_litir(tachairt.key);
