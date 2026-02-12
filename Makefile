@@ -33,4 +33,5 @@ local-run:
 
 pre-commit:
 	make build-css
+	make local-format
 	make local-ci
