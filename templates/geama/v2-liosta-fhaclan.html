@@ -54,6 +54,12 @@
             eirmeas_suidheachadh();
             meur_chlàr_suidheachadh();
             staid_leugh();
+            if (!STAID.le_tàthan && !DÀTA_GEAMA.oidheam.includes("-")) {
+                const damnaichte = document.getElementsByClassName("glf-le-tathan");
+                for (const dom of damnaichte) {
+                    dom.style.display = "none";
+                }
+            }
         }
 
         function geama_ùraich() {
@@ -166,11 +172,11 @@
             }
             if (staid.seòrsa === "v2") {
                 for (const facal in staid.cuimsean) {
-                    cuimse_suidhich_staid(facal, staid.cuimsean[facal]);
+                    cuimse_suidhich_staid(facal, staid.cuimsean[facal], {sgrolaich: false});
                 }
             } else {
                 for (const facal in staid.cuimsean) {
-                    cuimse_suidhich_staid(facal, "air sgeul");
+                    cuimse_suidhich_staid(facal, "air sgeul", {sgrolaich: false});
                 }
             }
             geama_comhailteach();
@@ -343,7 +349,7 @@
             staid_sgriobh();
         }
 
-        function cuimse_suidhich_staid(facal, staidÙr) {
+        function cuimse_suidhich_staid(facal, staidÙr, roghainnean={}) {
             // sonn(hidden), soillsichte(highlighted), air sgeul(found), taisbeanta(shown)
             const cuimse = STAID.cuimsean[facal];
             if (cuimse.staid === staidÙr) {
@@ -385,7 +391,9 @@
             }
             cuimse.staid = staidÙr;
             cuimseDOM.setAttribute("data-staid", cuimse.staid);
-            cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+            if (roghainnean.sgrolaich ?? true) {
+                cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+            }
         }
 
         function meur_chlàr_suidheachadh() {
