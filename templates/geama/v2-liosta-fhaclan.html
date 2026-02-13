@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+{% block title %}Liosta-Fhaclan{% endblock %}
+{% block content %}
+    <div class="grid grid-cols-1 gap-1">
+        <div id="instructions-en">
+            Find all the words using the provided letters.
+            <ul class="list-inside list-disc">
+                <li>You can only use each letter once.</li>
+                <li class="glf-le-tathan">You can use a hyphen multiple times.</li>
+                <li>Words have to be at least 4 long.</li>
+            </ul>
+        </div>
+        <div class="max-w-96 bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
+            <div id="an-t-oidheam" class="text-lg font-mono"></div>
+            <div id="ion-chur">
+                <span id="an-t-eirmeas" class="text-lg font-mono"></span>
+                <button id="eirmeas-caill" class="mr-2 glf-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
+                <button id="tomhais" class="glf-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
+            </div>
+        </div>
+        <div class="max-w-96 bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
+            <div id="na-cuimsean" class="font-mono">
+                {%- for cuimse in game_data.cuimsean %}
+                    <a id="cuimse-{{cuimse}}" data-staid="sonn" class="glf-cuimse">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="glf-cuimse-litir">_</span>{% endfor -%}</a>
+                {%- endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        const DÀTA_GEAMA = {{ game_data | json | safe }};
+        const ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
+        const STAID = {
+            comhailteach: false,
+            le_stràc: false,    // in oidheam
+            le_tàthan: false,   // in cuimsean
+            oidheam: [],
+            eirmeas: [],
+            eirmeas_taghta: [],
+            cuimsean: {},
+        };
+        const STRÀCADH = { "a": "à", "e": "è", "i": "ì", "o": "ò", "u": "ù" }
+
+        function geama_suidheachadh() {
+            if (DÀTA_GEAMA.error) {
+                const cearrDOM = document.createElement("div");
+                cearrDOM.textContent = DÀTA_GEAMA.error;
+                cearrDOM.classList.add("glf-geama-error");
+                document.getElementById("an-t-oidheam").appendChild(cearrDOM);
+                return;
+            }
+            staid_suidheachadh();
+            oidheam_suidheachadh();
+            eirmeas_suidheachadh();
+            meur_chlàr_suidheachadh();
+            staid_leugh();
+        }
+
+        function geama_ùraich() {
+            for (const oidheam of STAID.oidheam) {
+                if (oidheam.staid === "taghta") {
+                    oidheam.staid = "neo-taghta";
+                }
+            }
+            for (const eirmeas of STAID.eirmeas) {
+                if (eirmeas.staid === "taghta") {
+                    eirmeas.staid = "neo-taghta";
+                }
+            }
+            for (const [eirmeasÀite, [litir, oidheamÀite]] of STAID.eirmeas_taghta.entries()) {
+                const oidheam = STAID.oidheam[oidheamÀite];
+                const eirmeas = STAID.eirmeas[eirmeasÀite];
+                eirmeas.staid = "taghta";
+                eirmeas.litir = litir;
+                if (oidheam.staid === "neo-taghta") {
+                    oidheam.staid = "taghta";
+                    if (oidheam.litir === "-" && eirmeas_mu_dheireadh() !== "-") {
+                        oidheam.staid = "neo-taghta";
+                    }
+                }
+            }
+            // FUTURE -- set STAID.oidheam[].staid = "à comas" based on letters in cuimsean
+            oidheam_ùraich();
+            eirmeas_ùraich();
+        }
+
+        function geama_comhailteach() {
+            const hiostogram = {};
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                hiostogram[cuimse.staid] = (hiostogram[cuimse.staid] || 0) + 1;
+            }
+            if (hiostogram["sonn"] || hiostogram["highlighted"]) {
+                return;
+            }
+            let msg = "sin sibh fhein!";
+            if (hiostogram["taisbeanta"]) {
+                msg = "sin thu!";
+            }
+            STAID.comhailteach = true;
+            const ionChurDOM = document.getElementById("ion-chur");
+            const àrd = window.getComputedStyle(ionChurDOM).height;
+            const comhailteachDOM = document.createElement("div");
+            comhailteachDOM.id = "glf-comhailteach";
+            comhailteachDOM.textContent = msg;
+            comhailteachDOM.style.height = àrd;
+            ionChurDOM.replaceWith(comhailteachDOM);
+            for (const oidheam of STAID.oidheam) {
+                const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                litirDOM.setAttribute("data-staid", "taghta");
+            }
+        }
+
+        function staid_suidheachadh() {
+            for (const cuimse of DÀTA_GEAMA.cuimsean) {
+                STAID.cuimsean[cuimse] = {
+                    facal: cuimse,
+                    staid: "sonn",  // sonn(hidden), soillsichte(highlighted), air sgeul(found), taisbeanta(shown)
+                };
+                if (cuimse.includes("-")) {
+                    STAID.le_tàthan = true;
+                }
+            }
+            for (const [àite, litir] of DÀTA_GEAMA.oidheam.split("").entries()) {
+                STAID.oidheam[àite] = {
+                    àite: àite,
+                    litir: litir,
+                    staid: "neo-taghta",    // neo-taghta, taghta, à comas
+                };
+                if ("àèìòù".includes(litir)) {
+                    STAID.le_stràc = true;
+                }
+            }
+            if (STAID.le_tàthan && !DÀTA_GEAMA.oidheam.includes("-")) {
+                const àite = STAID.oidheam.length;
+                STAID.oidheam[àite] = {
+                    àite: àite,
+                    litir: "-",
+                    staid: "neo-taghta",    // neo-taghta, taghta
+                    far: true,
+                };
+            }
+            for (let àite = 0; àite < DÀTA_GEAMA.uas_mheud_fad; àite++) {
+                STAID.eirmeas[àite] = {
+                    àite: àite,
+                    litir: "_",
+                    staid: "neo-taghta",
+                };
+            }
+        }
+
+        function staid_leugh() {
+            if (ATH_SHUIDHICH_GEAMA === "true") {
+                localStorage.removeItem("staid a' gheama");
+                window.location.href = window.location.href.split("?")[0];
+                return;
+            }
+            const staidAmh = localStorage.getItem("staid a' gheama");
+            if (! staidAmh) {
+                return;
+            }
+            const staid = JSON.parse(staidAmh);
+            if (staid.oidheam !== DÀTA_GEAMA.oidheam) {
+                localStorage.removeItem("staid a' gheama");
+                return;
+            }
+            if (staid.seòrsa === "v2") {
+                for (const facal in staid.cuimsean) {
+                    cuimse_suidhich_staid(facal, staid.cuimsean[facal]);
+                }
+            } else {
+                for (const facal in staid.cuimsean) {
+                    cuimse_suidhich_staid(facal, "air sgeul");
+                }
+            }
+            geama_comhailteach();
+        }
+
+        function staid_sgriobh() {
+            const staid = {
+                seòrsa: "v2",
+                oidheam: DÀTA_GEAMA.oidheam,
+                cuimsean: {},
+            }
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                staid.cuimsean[cuimse.facal] = cuimse.staid;
+            }
+            const staidAmh = JSON.stringify(staid);
+            localStorage.setItem("staid a' gheama", staidAmh);
+        }
+
+        function oidheam_suidheachadh() {
+            const antOidheamDOM = document.getElementById("an-t-oidheam");
+            for (const oidheam of STAID.oidheam) {
+                const litirDOM = document.createElement("button");
+                litirDOM.id = `oidheam-${oidheam.àite}`;
+                litirDOM.setAttribute("data-staid", oidheam.staid);
+                litirDOM.textContent = oidheam.litir;
+                litirDOM.classList.add("glf-oidheam");
+                if (oidheam.far) {
+                    litirDOM.classList.add("glf-oidheam-far");
+                }
+                antOidheamDOM.appendChild(litirDOM);
+                litirDOM.addEventListener("click", () => {
+                    oidheam_cliog(oidheam.àite);
+                });
+            }
+        }
+
+        function oidheam_cliog(àite) {
+            if (STAID.comhailteach) {
+                return;
+            }
+            const oidheam = STAID.oidheam[àite];
+            if (oidheam.staid === "neo-taghta") {
+                eirmeas_cuir_ris(oidheam.litir, oidheam.àite);
+                geama_ùraich();
+                return;
+            }
+            if (oidheam.staid === "taghta") {
+                for (const [eirmeasÀite, [litir, oidheamÀite]] of STAID.eirmeas_taghta.entries()) {
+                    if (àite === oidheamÀite) {
+                        eirmeas_sguab_às(eirmeasÀite);
+                        geama_ùraich();
+                        return;
+                    }
+                }
+                return;
+            }
+        }
+
+        function oidheam_ùraich() {
+            for (const oidheam of STAID.oidheam) {
+                const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                litirDOM.setAttribute("data-staid", oidheam.staid);
+            }
+        }
+
+        function eirmeas_suidheachadh() {
+            const antEirmeasDOM = document.getElementById("an-t-eirmeas");
+            for (const eirmeas of STAID.eirmeas) {
+                const litirDOM = document.createElement("button");
+                litirDOM.id = `eirmeas-${eirmeas.àite}`;
+                litirDOM.setAttribute("data-staid", eirmeas.staid);
+                litirDOM.textContent = eirmeas.litir;
+                litirDOM.classList.add("glf-eirmeas");
+                antEirmeasDOM.appendChild(litirDOM);
+                litirDOM.addEventListener("click", () => {
+                    eirmeas_cliog(eirmeas.àite);
+                });
+            }
+            const caillDOM = document.getElementById("eirmeas-caill");
+            caillDOM.style.visibility = "hidden";
+            caillDOM.addEventListener("click", () => {
+                eirmeas_ath_shuidhich();
+                geama_ùraich();
+            });
+            const tomhaisDOM = document.getElementById("tomhais");
+            tomhaisDOM.addEventListener("click", eirmeas_tomhais);
+        }
+
+        function eirmeas_cliog(àite) {
+            if (STAID.comhailteach) {
+                return;
+            }
+            const eirmeas = STAID.eirmeas[àite];
+            if (eirmeas.staid === "taghta") {
+                eirmeas_sguab_às(àite);
+                geama_ùraich();
+            }
+        }
+
+        function eirmeas_cuir_ris(litir, oidheamÀite) {
+            STAID.eirmeas_taghta.push([litir, oidheamÀite]);
+        }
+
+        function eirmeas_mu_dheireadh() {
+            if (! STAID.eirmeas_taghta.length) {
+                return "";
+            }
+            return STAID.eirmeas_taghta.at(-1)[0];
+        }
+
+        function eirmeas_sguab_às(àite) {
+            if (àite === -1) {
+                STAID.eirmeas_taghta.pop();
+            } else {
+                STAID.eirmeas_taghta.splice(àite, 1);
+            }
+        }
+
+        function eirmeas_ath_shuidhich() {
+            STAID.eirmeas_taghta = [];
+        }
+
+        function eirmeas_tomhais() {
+            let eirmeas = "";
+            for (const [litir] of STAID.eirmeas_taghta) {
+                eirmeas += litir;
+            }
+            if (! eirmeas) {
+                return;
+            }
+            const cuimse = STAID.cuimsean[eirmeas];
+            if (! cuimse) {
+                const caillDOM = document.getElementById("eirmeas-caill");
+                caillDOM.style.visibility = "visible";
+                return;
+            }
+            cuimse_suidhich_staid(cuimse.facal, "air sgeul");
+            eirmeas_ath_shuidhich();
+            geama_ùraich();
+            geama_comhailteach();
+            staid_sgriobh();
+        }
+
+        function eirmeas_ùraich() {
+            for (const eirmeas of STAID.eirmeas) {
+                const litirDOM = document.getElementById(`eirmeas-${eirmeas.àite}`);
+                litirDOM.setAttribute("data-staid", eirmeas.staid);
+                if (eirmeas.staid === "taghta") {
+                    litirDOM.textContent = eirmeas.litir;
+                } else {
+                    litirDOM.textContent = "_";
+                }
+            }
+            const caillDOM = document.getElementById("eirmeas-caill");
+            caillDOM.style.visibility = "hidden";
+        }
+
+        function cuimse_seall_aon() {
+            const potential = [];
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                if (! ["air sgeul", "taisbeanta"].includes(cuimse.staid)) {
+                    potential.push(cuimse.facal);
+                }
+            }
+            if (! potential) {
+                return;
+            }
+            const àite = Math.floor(Math.random() * potential.length);
+            const facal = potential[àite];
+            cuimse_suidhich_staid(facal, "taisbeanta");
+            eirmeas_ath_shuidhich();
+            geama_ùraich();
+            geama_comhailteach();
+            staid_sgriobh();
+        }
+
+        function cuimse_suidhich_staid(facal, staidÙr) {
+            // sonn(hidden), soillsichte(highlighted), air sgeul(found), taisbeanta(shown)
+            const cuimse = STAID.cuimsean[facal];
+            if (cuimse.staid === staidÙr) {
+                return;
+            }
+            // TRANSITIONS
+            // sonn -> soillsichte          -- OK, FUTURE will happen when any eirmeas.litir is in cuimse.facal
+            // sonn -> air sgeul            -- OK, happens during eirmeas_tomhais() (before we know how to highlight)
+            // sonn -> taisbeanta           -- OK, happens when "seall aon fhacal"
+            // soillsichte -> sonn          -- OK, happens during eirmeas_ath_shuidhich()
+            // soillsichte -> air sgeul     -- OK, happens during eirmeas_tomhais() (once we know how to highlight)
+            // soillsichte -> taisbeanta    -- OK, happens during eirmeas_tomhais() (once we know how to highlight)
+            // air sgeul -> sonn            -- NOPE
+            // air sgeul -> soillsichte     -- NOPE
+            // air sgeul -> taisbeanta      -- NOPE
+            // taisbeanta -> sonn           -- NOPE
+            // taisbeanta -> soillsichte    -- NOPE
+            // taisbeanta -> air sgeul      -- NOPE, maybe OK during eirmeas_tomhais() (user re-types a shown cuimse)
+            let dèanE = false;
+            if (["sonn", "soillsichte"].includes(cuimse.staid)) {
+                dèanE = true;
+            }
+            if (staidÙr === "air sgeul") {
+                dèanE = true;
+            }
+            if (! dèanE) {
+                return;
+            }
+            const cuimseDOM = document.getElementById(`cuimse-${cuimse.facal}`);
+            if (["air sgeul", "taisbeanta"].includes(staidÙr)) {
+                for (const [i, litir] of cuimse.facal.split("").entries()) {
+                    const litirDOM = document.getElementById(`cuimse-${cuimse.facal}-${i}`);
+                    litirDOM.textContent = litir;
+                }
+                cuimseDOM.setAttribute("alt", cuimse);
+                cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse.facal}&slang=gd&wholeword=true`);
+                cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
+                cuimseDOM.setAttribute("target", "_blank");
+            }
+            cuimse.staid = staidÙr;
+            cuimseDOM.setAttribute("data-staid", cuimse.staid);
+            cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+        }
+
+        function meur_chlàr_suidheachadh() {
+            document.addEventListener("keydown", (tachairt) => {
+                if (tachairt.key === "Enter") {
+                    // when oidheam litir has focus, hitting <Enter> would cause a click
+                    tachairt.preventDefault();
+                }
+            });
+            document.addEventListener("keyup", meur_chlàr_tachairt);
+        }
+
+        function meur_chlàr_tachairt(tachairt) {
+            if (STAID.comhailteach) {
+                return;
+            }
+            if (tachairt.key === "Backspace") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
+                eirmeas_sguab_às(-1);
+                geama_ùraich();
+                return;
+            }
+            if (tachairt.key === "Enter") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
+                eirmeas_tomhais();
+                return;
+            }
+            if ("?" === tachairt.key) {
+                cuimse_seall_aon();
+            }
+            if ("aeiou".includes(tachairt.key) && eirmeas_mu_dheireadh() === tachairt.key) {
+                // convert last letter of eirmeas to stràc
+                const litirLeStràc = STRÀCADH[tachairt.key];
+                for (const oidheam of STAID.oidheam) {
+                    if (oidheam.staid === "neo-taghta" && oidheam.litir === litirLeStràc) {
+                        eirmeas_sguab_às(-1);
+                        eirmeas_cuir_ris(oidheam.litir, oidheam.àite);
+                        geama_ùraich();
+                        return;
+                    }
+                }
+            }
+            for (const oidheam of STAID.oidheam) {
+                if (oidheam.litir === tachairt.key && oidheam.staid === "neo-taghta") {
+                    const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                    litirDOM.click();
+                    return;
+                }
+            }
+            if ("aeiou".includes(tachairt.key)) {
+                // non-stràc isn't available, so add stràc version instead
+                const litirLeStràc = STRÀCADH[tachairt.key];
+                for (const oidheam of STAID.oidheam) {
+                    if (oidheam.litir === litirLeStràc && oidheam.staid === "neo-taghta") {
+                        const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                        litirDOM.click();
+                        return;
+                    }
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", geama_suidheachadh);
+    </script>
+{% endblock %}

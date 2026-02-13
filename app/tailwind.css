@@ -21,3 +21,52 @@
 #geama-comhailteach {
     @apply px-4 py-1 rounded-lg align-middle text-lg font-bold text-green-950 bg-green-200
 }
+
+.glf-button {
+    @apply px-2 py-1 rounded-lg shadow-md
+}
+#glf-geama-error {
+    @apply font-sans bg-red-300 text-red-800 px-4
+}
+.glf-oidheam {
+    @apply px-2 py-1 rounded-lg shadow-md mr-1 font-bold
+}
+.glf-oidheam-far {
+    @apply ml-2
+}
+.glf-oidheam[data-staid="neo-taghta"] {
+    @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-800
+}
+.glf-oidheam[data-staid="taghta"] {
+    @apply text-blue-800 bg-blue-600/75 hover:text-blue-400 hover:bg-blue-800
+}
+.glf-oidheam[data-staid="à comas"] {}
+.glf-eirmeas {
+    @apply px-2 py-1 rounded-lg shadow-md mr-1 font-bold
+}
+.glf-eirmeas[data-staid="neo-taghta"] {
+    @apply px-2 py-1 rounded-lg shadow-md text-green-100 bg-green-100
+}
+.glf-eirmeas[data-staid="taghta"] {
+    @apply px-2 py-1 rounded-lg shadow-md text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600
+}
+.glf-cuimse {
+    @apply m-1 px-2 py-0 rounded-lg inline-block
+}
+.glf-cuimse[data-staid="sonn"] {}
+.glf-cuimse[data-staid="soillsichte"] {}
+.glf-cuimse[data-staid="air sgeul"] {
+    @apply font-bold text-green-900 bg-green-200
+}
+.glf-cuimse[data-staid="taisbeanta"] {
+    @apply font-bold text-yellow-900 bg-yellow-200/50
+}
+.glf-cuimse-litir {
+    @apply inline-block w-4
+}
+#glf-comhailteach {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @apply px-4 py-1 rounded-lg text-lg font-bold text-green-950 bg-green-200
+}
