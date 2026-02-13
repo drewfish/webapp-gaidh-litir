@@ -32,8 +32,8 @@
         const ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
         const STAID = {
             comhailteach: false,
-            le_stràc: false,    // in oidheam
-            le_tàthan: false,   // in cuimsean
+            le_stràc: false,    // anns an oidheam
+            le_tàthan: false,   // anns na cuimsean
             oidheam: [],
             eirmeas: [],
             eirmeas_taghta: [],
@@ -65,6 +65,7 @@
             for (const eirmeas of STAID.eirmeas) {
                 if (eirmeas.staid === "taghta") {
                     eirmeas.staid = "neo-taghta";
+                    eirmeas.litir = "_";
                 }
             }
             for (const [eirmeasÀite, [litir, oidheamÀite]] of STAID.eirmeas_taghta.entries()) {
@@ -92,16 +93,16 @@
             if (hiostogram["sonn"] || hiostogram["highlighted"]) {
                 return;
             }
-            let msg = "sin sibh fhein!";
+            let teachdaireachd = "sin sibh fhein!";
             if (hiostogram["taisbeanta"]) {
-                msg = "sin thu!";
+                teachdaireachd = "sin thu!";
             }
             STAID.comhailteach = true;
             const ionChurDOM = document.getElementById("ion-chur");
             const àrd = window.getComputedStyle(ionChurDOM).height;
             const comhailteachDOM = document.createElement("div");
             comhailteachDOM.id = "glf-comhailteach";
-            comhailteachDOM.textContent = msg;
+            comhailteachDOM.textContent = teachdaireachd;
             comhailteachDOM.style.height = àrd;
             ionChurDOM.replaceWith(comhailteachDOM);
             for (const oidheam of STAID.oidheam) {
@@ -135,7 +136,7 @@
                 STAID.oidheam[àite] = {
                     àite: àite,
                     litir: "-",
-                    staid: "neo-taghta",    // neo-taghta, taghta
+                    staid: "neo-taghta",    // neo-taghta, taghta, à comas
                     far: true,
                 };
             }
@@ -143,7 +144,7 @@
                 STAID.eirmeas[àite] = {
                     àite: àite,
                     litir: "_",
-                    staid: "neo-taghta",
+                    staid: "neo-taghta",    // neo-taghta, taghta
                 };
             }
         }
@@ -317,28 +318,24 @@
             for (const eirmeas of STAID.eirmeas) {
                 const litirDOM = document.getElementById(`eirmeas-${eirmeas.àite}`);
                 litirDOM.setAttribute("data-staid", eirmeas.staid);
-                if (eirmeas.staid === "taghta") {
-                    litirDOM.textContent = eirmeas.litir;
-                } else {
-                    litirDOM.textContent = "_";
-                }
+                litirDOM.textContent = eirmeas.litir;
             }
             const caillDOM = document.getElementById("eirmeas-caill");
             caillDOM.style.visibility = "hidden";
         }
 
         function cuimse_seall_aon() {
-            const potential = [];
+            const dualachdan = [];
             for (const cuimse of Object.values(STAID.cuimsean)) {
                 if (! ["air sgeul", "taisbeanta"].includes(cuimse.staid)) {
-                    potential.push(cuimse.facal);
+                    dualachdan.push(cuimse.facal);
                 }
             }
-            if (! potential) {
+            if (! dualachdan) {
                 return;
             }
-            const àite = Math.floor(Math.random() * potential.length);
-            const facal = potential[àite];
+            const àite = Math.floor(Math.random() * dualachdan.length);
+            const facal = dualachdan[àite];
             cuimse_suidhich_staid(facal, "taisbeanta");
             eirmeas_ath_shuidhich();
             geama_ùraich();
@@ -355,7 +352,7 @@
             // TRANSITIONS
             // sonn -> soillsichte          -- OK, FUTURE will happen when any eirmeas.litir is in cuimse.facal
             // sonn -> air sgeul            -- OK, happens during eirmeas_tomhais() (before we know how to highlight)
-            // sonn -> taisbeanta           -- OK, happens when "seall aon fhacal"
+            // sonn -> taisbeanta           -- OK, happens during cuimse_seall_aon()
             // soillsichte -> sonn          -- OK, happens during eirmeas_ath_shuidhich()
             // soillsichte -> air sgeul     -- OK, happens during eirmeas_tomhais() (once we know how to highlight)
             // soillsichte -> taisbeanta    -- OK, happens during eirmeas_tomhais() (once we know how to highlight)
@@ -421,9 +418,9 @@
             if ("?" === tachairt.key) {
                 cuimse_seall_aon();
             }
-            if ("aeiou".includes(tachairt.key) && eirmeas_mu_dheireadh() === tachairt.key) {
-                // convert last letter of eirmeas to stràc
-                const litirLeStràc = STRÀCADH[tachairt.key];
+            const litirLeStràc = STRÀCADH[tachairt.key];
+            if (litirLeStràc && eirmeas_mu_dheireadh() === tachairt.key) {
+                // replace last letter of eirmeas with stràc version
                 for (const oidheam of STAID.oidheam) {
                     if (oidheam.staid === "neo-taghta" && oidheam.litir === litirLeStràc) {
                         eirmeas_sguab_às(-1);
@@ -440,9 +437,8 @@
                     return;
                 }
             }
-            if ("aeiou".includes(tachairt.key)) {
+            if (litirLeStràc) {
                 // non-stràc isn't available, so add stràc version instead
-                const litirLeStràc = STRÀCADH[tachairt.key];
                 for (const oidheam of STAID.oidheam) {
                     if (oidheam.litir === litirLeStràc && oidheam.staid === "neo-taghta") {
                         const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
