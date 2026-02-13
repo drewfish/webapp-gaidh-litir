@@ -54,6 +54,8 @@
             eirmeas_suidheachadh();
             meur_chlàr_suidheachadh();
             staid_leugh();
+            oidheam_à_comas();
+            oidheam_ùraich();
             if (!STAID.le_tàthan && !DÀTA_GEAMA.oidheam.includes("-")) {
                 const damnaichte = document.getElementsByClassName("glf-le-tathan");
                 for (const dom of damnaichte) {
@@ -236,6 +238,26 @@
             }
         }
 
+        function oidheam_à_comas() {
+            // ... ach thoir sùil an toiseach
+            const damnaichte = {};
+            for (const oidheam of STAID.oidheam) {
+                damnaichte[oidheam.litir] = true;
+            }
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                if (! cuimse_nochdaidh(cuimse.staid)) {
+                    for (const litir of cuimse.facal) {
+                        delete damnaichte[litir];
+                    }
+                }
+            }
+            for (const oidheam of STAID.oidheam) {
+                if (Object.keys(damnaichte).includes(oidheam.litir)) {
+                    oidheam.staid = "à comas";
+                }
+            }
+        }
+
         function oidheam_ùraich() {
             for (const oidheam of STAID.oidheam) {
                 const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
@@ -321,6 +343,7 @@
             }
             cuimse_suidhich_staid(cuimse.facal, "air sgeul");
             eirmeas_ath_shuidhich();
+            oidheam_à_comas();
             geama_ùraich();
             geama_comhailteach();
             staid_sgriobh();
@@ -336,10 +359,14 @@
             caillDOM.style.visibility = "hidden";
         }
 
+        function cuimse_nochdaidh(staid) {
+            return ["air sgeul", "taisbeanta"].includes(staid);
+        }
+
         function cuimse_seall_aon() {
             const dualachdan = [];
             for (const cuimse of Object.values(STAID.cuimsean)) {
-                if (! ["air sgeul", "taisbeanta"].includes(cuimse.staid)) {
+                if (! cuimse_nochdaidh(cuimse.staid)) {
                     dualachdan.push(cuimse.facal);
                 }
             }
@@ -350,6 +377,7 @@
             const facal = dualachdan[àite];
             cuimse_suidhich_staid(facal, "taisbeanta");
             eirmeas_ath_shuidhich();
+            oidheam_à_comas();
             geama_ùraich();
             geama_comhailteach();
             staid_sgriobh();
@@ -375,7 +403,7 @@
             // taisbeanta -> soillsichte    -- NOPE
             // taisbeanta -> air sgeul      -- NOPE, maybe OK during eirmeas_tomhais() (user re-types a shown cuimse)
             let dèanE = false;
-            if (["sonn", "soillsichte"].includes(cuimse.staid)) {
+            if (! cuimse_nochdaidh(cuimse.staid)) {
                 dèanE = true;
             }
             if (staidÙr === "air sgeul") {
@@ -385,7 +413,7 @@
                 return;
             }
             const cuimseDOM = document.getElementById(`cuimse-${cuimse.facal}`);
-            if (["air sgeul", "taisbeanta"].includes(staidÙr)) {
+            if (cuimse_nochdaidh(staidÙr)) {
                 for (const [i, litir] of cuimse.facal.split("").entries()) {
                     const litirDOM = document.getElementById(`cuimse-${cuimse.facal}-${i}`);
                     litirDOM.textContent = litir;

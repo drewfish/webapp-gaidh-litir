@@ -18,7 +18,9 @@
 .glf-oidheam[data-staid="taghta"] {
     @apply text-blue-800 bg-blue-600/75 hover:text-blue-400 hover:bg-blue-800
 }
-.glf-oidheam[data-staid="à comas"] {}
+.glf-oidheam[data-staid="à comas"] {
+    @apply text-gray-400/25 bg-gray-100/25
+}
 .glf-eirmeas {
     @apply px-2 py-1 rounded-lg shadow-md mr-1 font-bold
 }
