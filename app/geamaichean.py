@@ -32,7 +32,7 @@ async def liosta_fhaclan(render: RendererDep, request: Request) -> Any:
     else:
         print("MISSING game data file --", game_file)
     return render(
-        "geama/v2-liosta-fhaclan.html",
+        "geama/liosta-fhaclan.html",
         game_data=game_data,
         ath_shuidhich_geama=ath_shuidhich,
     )
@@ -64,7 +64,7 @@ async def v2_liosta_fhaclan(render: RendererDep, request: Request) -> Any:
     else:
         print("MISSING game data file --", game_file)
     return render(
-        "geama/v2-liosta-fhaclan.html",
+        "geama/liosta-fhaclan.html",
         game_data=game_data,
         ath_shuidhich_geama=ath_shuidhich,
     )

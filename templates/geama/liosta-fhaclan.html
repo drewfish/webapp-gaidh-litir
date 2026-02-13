@@ -2,360 +2,401 @@
 {% block title %}Liosta-Fhaclan{% endblock %}
 {% block content %}
     <div class="grid grid-cols-1 gap-1">
-        <div>
-            <div id="instructions-en">
-                Find all the words using the provided letters.
-                <ul class="list-inside list-disc">
-                    <li>You can only use each letter once.</li>
-                    <li>You can use a hyphen multiple times.</li>
-                    <li>Words have to be at least 4 long.</li>
-                </ul>
-            </div>
-            <div class="max-w-96 bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
-                <div id="an-t-oidheam" class="text-lg font-mono"></div>
-                <div id="ion-chur">
-                    <span id="an-t-eirmeas" class="text-lg font-mono"></span>
-                    <button id="eirmeas-caill" class="mr-2 geama-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
-                    <button id="tomhais" class="geama-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
-                </div>
+        <div id="instructions-en">
+            Find all the words using the provided letters.
+            <ul class="list-inside list-disc">
+                <li>You can only use each letter once.</li>
+                <li class="glf-le-tathan">You can use a hyphen multiple times.</li>
+                <li>Words have to be at least 4 long.</li>
+            </ul>
+        </div>
+        <div class="max-w-96 bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
+            <div id="an-t-oidheam" class="text-lg font-mono"></div>
+            <div id="ion-chur">
+                <span id="an-t-eirmeas" class="text-lg font-mono"></span>
+                <button id="eirmeas-caill" class="mr-2 glf-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
+                <button id="tomhais" class="glf-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
             </div>
         </div>
         <div class="max-w-96 bg-indigo-200 rounded-md p-2 overflow-y-auto w-full max-h-96">
             <div id="na-cuimsean" class="font-mono">
                 {%- for cuimse in game_data.cuimsean %}
-                    <a id="cuimse-{{cuimse}}" class="m-1 px-2 py-0 rounded-lg inline-block">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="inline-block w-4">_</span>{% endfor -%}</a>
+                    <a id="cuimse-{{cuimse}}" data-staid="sonn" class="glf-cuimse">{%- for litir in cuimse %}<span id="cuimse-{{cuimse}}-{{loop.index0}}" class="glf-cuimse-litir">_</span>{% endfor -%}</a>
                 {%- endfor %}
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
-        let DÀTA_GEAMA = {{ game_data | json | safe }};
-        let ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
-        let PÀIRTEAN_EIRMEAS = [];
-        let STAID_A_GHEAMA = { cuimsean: {} };
-        let LITRICHEAN_ANNS_NA_CUIMSEAN = {};
-        let GEAMA_COMHAILTEACH = false;
+        const DÀTA_GEAMA = {{ game_data | json | safe }};
+        const ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
+        const STAID = {
+            comhailteach: false,
+            le_stràc: false,    // anns an oidheam
+            le_tàthan: false,   // anns na cuimsean
+            oidheam: [],
+            eirmeas: [],
+            eirmeas_taghta: [],
+            cuimsean: {},
+        };
         const STRÀCADH = { "a": "à", "e": "è", "i": "ì", "o": "ò", "u": "ù" }
 
-
-        function cuimse_an_comas(cuimse, cuimseDOM) {
-            for (let [i, litir] of cuimse.split("").entries()) {
-                let litirDOM = document.getElementById(`cuimse-${cuimse}-${i}`);
-                litirDOM.textContent = litir;
+        function geama_suidheachadh() {
+            if (DÀTA_GEAMA.error) {
+                const cearrDOM = document.createElement("div");
+                cearrDOM.textContent = DÀTA_GEAMA.error;
+                cearrDOM.classList.add("glf-geama-error");
+                document.getElementById("an-t-oidheam").appendChild(cearrDOM);
+                return;
             }
-            cuimseDOM.classList.add("geama-cuimse-found");
-            cuimseDOM.setAttribute("alt", cuimse);
-            cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse}&slang=gd&wholeword=true`);
-            cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
-            cuimseDOM.setAttribute("target", "_blank");
-            staid_a_gheama_sgrìobh(cuimse);
+            staid_suidheachadh();
+            oidheam_suidheachadh();
+            eirmeas_suidheachadh();
+            meur_chlàr_suidheachadh();
+            staid_leugh();
+            if (!STAID.le_tàthan && !DÀTA_GEAMA.oidheam.includes("-")) {
+                const damnaichte = document.getElementsByClassName("glf-le-tathan");
+                for (const dom of damnaichte) {
+                    dom.style.display = "none";
+                }
+            }
         }
 
-
-        function oidheam_dèan() {
-            let antOidheamDOM = document.getElementById("an-t-oidheam");
-            let tàthanDOM = undefined;
-            for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-                let litir = DÀTA_GEAMA.oidheam[oidheamÀite];
-                let litirDOM = document.createElement("button");
-                litirDOM.id = `litir-oidheam-${oidheamÀite}`;
-                litirDOM.àite = oidheamÀite;
-                litirDOM.taghta = false;
-                if (litir === "-" && !tàthanDOM) {
-                    litirDOM.classList.add("oidheam-tàthan");
-                    tàthanDOM = litirDOM;
+        function geama_ùraich() {
+            for (const oidheam of STAID.oidheam) {
+                if (oidheam.staid === "taghta") {
+                    oidheam.staid = "neo-taghta";
                 }
-                litirDOM.textContent = litir;
-                litirDOM.classList.add("mr-1", "geama-button", "font-bold");
-                oidheam_litir_an_comas(litirDOM);
-                antOidheamDOM.appendChild(litirDOM);
-                litirDOM.addEventListener("click", () => {
-                    eirmeas_litir_gnìomhaich(litir, oidheamÀite);
-                });
             }
-            if (!tàthanDOM && LITRICHEAN_ANNS_NA_CUIMSEAN["-"]) {
-                let seTàthanAthann = false;
-                for (let cuimse in DÀTA_GEAMA.cuimsean) {
-                    if (cuimse.includes("-")) {
-                        seTàthanAthann = true;
+            for (const eirmeas of STAID.eirmeas) {
+                if (eirmeas.staid === "taghta") {
+                    eirmeas.staid = "neo-taghta";
+                    eirmeas.litir = "_";
+                }
+            }
+            for (const [eirmeasÀite, [litir, oidheamÀite]] of STAID.eirmeas_taghta.entries()) {
+                const oidheam = STAID.oidheam[oidheamÀite];
+                const eirmeas = STAID.eirmeas[eirmeasÀite];
+                eirmeas.staid = "taghta";
+                eirmeas.litir = litir;
+                if (oidheam.staid === "neo-taghta") {
+                    oidheam.staid = "taghta";
+                    if (oidheam.litir === "-" && eirmeas_mu_dheireadh() !== "-") {
+                        oidheam.staid = "neo-taghta";
                     }
                 }
-                if (seTàthanAthann) {
-                    let tàthanDOM = document.createElement("button");
-                    tàthanDOM.id = "oidheam-tàthan";
-                    tàthanDOM.àite = "-";
-                    tàthanDOM.classList.add("oidheam-tàthan", "font-bold");
-                    oidheam_litir_an_comas(tàthanDOM);
-                    tàthanDOM.textContent = "-";
-                    tàthanDOM.classList.add("ml-2", "font-normal");
-                    antOidheamDOM.appendChild(tàthanDOM);
-                    tàthanDOM.addEventListener("click", () => {
-                        eirmeas_litir_gnìomhaich("-");
-                    });
-                }
+            }
+            // FUTURE -- set STAID.oidheam[].staid = "à comas" based on letters in cuimsean
+            oidheam_ùraich();
+            eirmeas_ùraich();
+        }
+
+        function geama_comhailteach() {
+            const hiostogram = {};
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                hiostogram[cuimse.staid] = (hiostogram[cuimse.staid] || 0) + 1;
+            }
+            if (hiostogram["sonn"] || hiostogram["highlighted"]) {
+                return;
+            }
+            let teachdaireachd = "sin sibh fhein!";
+            if (hiostogram["taisbeanta"]) {
+                teachdaireachd = "sin thu!";
+            }
+            STAID.comhailteach = true;
+            const ionChurDOM = document.getElementById("ion-chur");
+            const àrd = window.getComputedStyle(ionChurDOM).height;
+            const comhailteachDOM = document.createElement("div");
+            comhailteachDOM.id = "glf-comhailteach";
+            comhailteachDOM.textContent = teachdaireachd;
+            comhailteachDOM.style.height = àrd;
+            ionChurDOM.replaceWith(comhailteachDOM);
+            for (const oidheam of STAID.oidheam) {
+                const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                litirDOM.setAttribute("data-staid", "taghta");
             }
         }
 
-
-        function oidheam_litir_an_comas(litirDOM) {
-            if (litirDOM) {
-                litirDOM.taghta = false;
-                litirDOM.classList.add("geama-oidheam-enabled");
-                litirDOM.classList.remove("geama-oidheam-disabled");
+        function staid_suidheachadh() {
+            for (const cuimse of DÀTA_GEAMA.cuimsean) {
+                STAID.cuimsean[cuimse] = {
+                    facal: cuimse,
+                    staid: "sonn",  // sonn(hidden), soillsichte(highlighted), air sgeul(found), taisbeanta(shown)
+                };
+                if (cuimse.includes("-")) {
+                    STAID.le_tàthan = true;
+                }
+            }
+            for (const [àite, litir] of DÀTA_GEAMA.oidheam.split("").entries()) {
+                STAID.oidheam[àite] = {
+                    àite: àite,
+                    litir: litir,
+                    staid: "neo-taghta",    // neo-taghta, taghta, à comas
+                };
+                if ("àèìòù".includes(litir)) {
+                    STAID.le_stràc = true;
+                }
+            }
+            if (STAID.le_tàthan && !DÀTA_GEAMA.oidheam.includes("-")) {
+                const àite = STAID.oidheam.length;
+                STAID.oidheam[àite] = {
+                    àite: àite,
+                    litir: "-",
+                    staid: "neo-taghta",    // neo-taghta, taghta, à comas
+                    far: true,
+                };
+            }
+            for (let àite = 0; àite < DÀTA_GEAMA.uas_mheud_fad; àite++) {
+                STAID.eirmeas[àite] = {
+                    àite: àite,
+                    litir: "_",
+                    staid: "neo-taghta",    // neo-taghta, taghta
+                };
             }
         }
 
+        function staid_leugh() {
+            if (ATH_SHUIDHICH_GEAMA === "true") {
+                localStorage.removeItem("staid a' gheama");
+                window.location.href = window.location.href.split("?")[0];
+                return;
+            }
+            const staidAmh = localStorage.getItem("staid a' gheama");
+            if (! staidAmh) {
+                return;
+            }
+            const staid = JSON.parse(staidAmh);
+            if (staid.oidheam !== DÀTA_GEAMA.oidheam) {
+                localStorage.removeItem("staid a' gheama");
+                return;
+            }
+            if (staid.seòrsa === "v2") {
+                for (const facal in staid.cuimsean) {
+                    cuimse_suidhich_staid(facal, staid.cuimsean[facal], {sgrolaich: false});
+                }
+            } else {
+                for (const facal in staid.cuimsean) {
+                    cuimse_suidhich_staid(facal, "air sgeul", {sgrolaich: false});
+                }
+            }
+            geama_comhailteach();
+        }
 
-        function oidheam_litir_à_comas(litirDOM) {
-            if (litirDOM) {
-                litirDOM.taghta = true;
-                litirDOM.classList.remove("geama-oidheam-enabled");
-                litirDOM.classList.add("geama-oidheam-disabled");
+        function staid_sgriobh() {
+            const staid = {
+                seòrsa: "v2",
+                oidheam: DÀTA_GEAMA.oidheam,
+                cuimsean: {},
+            }
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                staid.cuimsean[cuimse.facal] = cuimse.staid;
+            }
+            const staidAmh = JSON.stringify(staid);
+            localStorage.setItem("staid a' gheama", staidAmh);
+        }
+
+        function oidheam_suidheachadh() {
+            const antOidheamDOM = document.getElementById("an-t-oidheam");
+            for (const oidheam of STAID.oidheam) {
+                const litirDOM = document.createElement("button");
+                litirDOM.id = `oidheam-${oidheam.àite}`;
+                litirDOM.setAttribute("data-staid", oidheam.staid);
+                litirDOM.textContent = oidheam.litir;
+                litirDOM.classList.add("glf-oidheam");
+                if (oidheam.far) {
+                    litirDOM.classList.add("glf-oidheam-far");
+                }
+                antOidheamDOM.appendChild(litirDOM);
+                litirDOM.addEventListener("click", () => {
+                    oidheam_cliog(oidheam.àite);
+                });
             }
         }
 
-
-        function oidheam_lorg_litirDOM(litir, oidheamÀite) {
-            if (litir === "-") {
-                return document.getElementsByClassName("oidheam-tàthan")[0];
+        function oidheam_cliog(àite) {
+            if (STAID.comhailteach) {
+                return;
             }
-            if (oidheamÀite) {
-                return document.getElementById(`litir-oidheam-${oidheamÀite}`);
+            const oidheam = STAID.oidheam[àite];
+            if (oidheam.staid === "neo-taghta") {
+                eirmeas_cuir_ris(oidheam.litir, oidheam.àite);
+                geama_ùraich();
+                return;
             }
-            for (oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-                let litirDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-                if (! litirDOM) {
-                    continue;
+            if (oidheam.staid === "taghta") {
+                for (const [eirmeasÀite, [litir, oidheamÀite]] of STAID.eirmeas_taghta.entries()) {
+                    if (àite === oidheamÀite) {
+                        eirmeas_sguab_às(eirmeasÀite);
+                        geama_ùraich();
+                        return;
+                    }
                 }
-                if (litirDOM.taghta) {
-                    continue;
-                }
-                if (litirDOM.textContent === litir) {
-                    return litirDOM;
-                }
+                return;
             }
-            return undefined;
         }
-
 
         function oidheam_ùraich() {
-            for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-                let litirDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-                oidheam_litir_an_comas(litirDOM);
-            }
-            let tàthanDOM = oidheam_lorg_litirDOM("-");
-            oidheam_litir_an_comas(tàthanDOM);
-            for (const [litir, oidheamÀite] of PÀIRTEAN_EIRMEAS) {
-                let litirDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
-                oidheam_litir_à_comas(litirDOM);
-            }
-            if (eirmeas_litir_mu_dheireadh() === "-") {
-                oidheam_litir_à_comas(tàthanDOM);
-            } else {
-                oidheam_litir_an_comas(tàthanDOM);
+            for (const oidheam of STAID.oidheam) {
+                const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                litirDOM.setAttribute("data-staid", oidheam.staid);
             }
         }
 
-
-        function eirmeas_dèan() {
-            let antEirmeasDOM = document.getElementById("an-t-eirmeas");
-            for (let eirmeasÀite = 0; eirmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eirmeasÀite++) {
-                let litirDOM = document.createElement("button");
-                litirDOM.id = `litir-eirmeas-${eirmeasÀite}`;
-                litirDOM.àite = eirmeasÀite;
-                litirDOM.textContent = "_";
-                litirDOM.classList.add("mr-1", "geama-button", "font-bold");
+        function eirmeas_suidheachadh() {
+            const antEirmeasDOM = document.getElementById("an-t-eirmeas");
+            for (const eirmeas of STAID.eirmeas) {
+                const litirDOM = document.createElement("button");
+                litirDOM.id = `eirmeas-${eirmeas.àite}`;
+                litirDOM.setAttribute("data-staid", eirmeas.staid);
+                litirDOM.textContent = eirmeas.litir;
+                litirDOM.classList.add("glf-eirmeas");
                 antEirmeasDOM.appendChild(litirDOM);
                 litirDOM.addEventListener("click", () => {
-                    PÀIRTEAN_EIRMEAS.splice(eirmeasÀite, 1);
-                    oidheam_ùraich();
-                    eirmeas_ùraich();
+                    eirmeas_cliog(eirmeas.àite);
                 });
-                eirmeas_litir_à_comas(litirDOM);
             }
-            let caillDOM = document.getElementById("eirmeas-caill");
+            const caillDOM = document.getElementById("eirmeas-caill");
             caillDOM.style.visibility = "hidden";
             caillDOM.addEventListener("click", () => {
-                PÀIRTEAN_EIRMEAS = [];
-                oidheam_ùraich();
-                eirmeas_ùraich();
+                eirmeas_ath_shuidhich();
+                geama_ùraich();
             });
-            antEirmeasDOM.appendChild(caillDOM);
-
-            let tomhaisDOM = document.getElementById("tomhais");
+            const tomhaisDOM = document.getElementById("tomhais");
             tomhaisDOM.addEventListener("click", eirmeas_tomhais);
         }
 
-
-        function eirmeas_litir_an_comas(litirDOM) {
-            litirDOM.disabled = false;
-            litirDOM.classList.add("geama-eirmeas-enabled");
-            litirDOM.classList.remove("geama-eirmeas-disabled");
-        }
-
-
-        function eirmeas_litir_à_comas(litirDOM) {
-            litirDOM.disabled = true;
-            litirDOM.classList.remove("geama-eirmeas-enabled");
-            litirDOM.classList.add("geama-eirmeas-disabled");
-        }
-
-
-        function eirmeas_litir_gnìomhaich(litir, oidheamÀite) {
-            if (GEAMA_COMHAILTEACH) {
+        function eirmeas_cliog(àite) {
+            if (STAID.comhailteach) {
                 return;
             }
-            if (litir === "-") {
-                if (eirmeas_litir_mu_dheireadh() === "-") {
-                    PÀIRTEAN_EIRMEAS.pop();
-                } else {
-                    eirmeas_cuir_ris_litir(litir, oidheamÀite)
-                }
-                oidheam_ùraich();
-                eirmeas_ùraich();
-                return;
+            const eirmeas = STAID.eirmeas[àite];
+            if (eirmeas.staid === "taghta") {
+                eirmeas_sguab_às(àite);
+                geama_ùraich();
             }
-            for (const [i, clàr] of PÀIRTEAN_EIRMEAS.entries()) {
-                if (clàr[1] === oidheamÀite) {
-                    PÀIRTEAN_EIRMEAS.splice(i, 1);
-                    oidheam_ùraich();
-                    eirmeas_ùraich();
-                    return;
-                }
-            }
-            eirmeas_cuir_ris_litir(litir, oidheamÀite)
         }
 
+        function eirmeas_cuir_ris(litir, oidheamÀite) {
+            STAID.eirmeas_taghta.push([litir, oidheamÀite]);
+        }
 
-        function eirmeas_litir_mu_dheireadh() {
-            if (! PÀIRTEAN_EIRMEAS.length) {
+        function eirmeas_mu_dheireadh() {
+            if (! STAID.eirmeas_taghta.length) {
                 return "";
             }
-            return PÀIRTEAN_EIRMEAS.at(-1)[0];
+            return STAID.eirmeas_taghta.at(-1)[0];
         }
 
-
-        function eirmeas_cuir_ris_litir(litir, oidheamÀite) {
-            if (PÀIRTEAN_EIRMEAS.length >= DÀTA_GEAMA.uas_mheud_fad) {
-                return;
-            }
-            if (litir === "-") {
-                if (eirmeas_litir_mu_dheireadh() === "-") {
-                    return;
-                }
-                PÀIRTEAN_EIRMEAS.push(["-", undefined]);
-                oidheam_ùraich();
-                eirmeas_ùraich();
-                return;
-            }
-            let seFuaimreagGunStràcAthann = "aeiou".includes(litir);
-            let oidheam = DÀTA_GEAMA.oidheam;
-            let seOidheamLeStràcAthann = oidheam.includes(STRÀCADH[litir]);
-            if (seFuaimreagGunStràcAthann && seOidheamLeStràcAthann) {
-                if (eirmeas_litir_mu_dheireadh() === litir) {
-                    // convert last letter of eirmeas to stràc
-                    let litirLeStràc = STRÀCADH[litir];
-                    let litirDOM = oidheam_lorg_litirDOM(litirLeStràc, oidheamÀite);
-                    if (litirDOM) {
-                        PÀIRTEAN_EIRMEAS.pop();
-                        PÀIRTEAN_EIRMEAS.push([litirLeStràc, litirDOM.àite]);
-                        oidheam_ùraich();
-                        eirmeas_ùraich();
-                    }
-                    return;
-                }
-                let seOidheamLeNeoStràcAthann = oidheam_lorg_litirDOM(litir);
-                if (!seOidheamLeNeoStràcAthann) {
-                    // non-stràc isn't available, so add stràc version instead
-                    let litirLeStràc = STRÀCADH[litir];
-                    let litirDOM = oidheam_lorg_litirDOM(litirLeStràc, oidheamÀite);
-                    if (litirDOM) {
-                        PÀIRTEAN_EIRMEAS.push([litirLeStràc, litirDOM.àite]);
-                        oidheam_ùraich();
-                        eirmeas_ùraich();
-                    }
-                    return;
-                }
-            }
-            let litirDOM = oidheam_lorg_litirDOM(litir, oidheamÀite);
-            if (litirDOM) {
-                PÀIRTEAN_EIRMEAS.push([litir, litirDOM.àite]);
-                oidheam_ùraich();
-                eirmeas_ùraich();
+        function eirmeas_sguab_às(àite) {
+            if (àite === -1) {
+                STAID.eirmeas_taghta.pop();
+            } else {
+                STAID.eirmeas_taghta.splice(àite, 1);
             }
         }
 
+        function eirmeas_ath_shuidhich() {
+            STAID.eirmeas_taghta = [];
+        }
 
         function eirmeas_tomhais() {
             let eirmeas = "";
-            for (const [litir] of PÀIRTEAN_EIRMEAS) {
+            for (const [litir] of STAID.eirmeas_taghta) {
                 eirmeas += litir;
             }
             if (! eirmeas) {
                 return;
             }
-            let cuimseDOM = document.getElementById(`cuimse-${eirmeas}`);
-            if (! cuimseDOM) {
-                let caillDOM = document.getElementById("eirmeas-caill");
+            const cuimse = STAID.cuimsean[eirmeas];
+            if (! cuimse) {
+                const caillDOM = document.getElementById("eirmeas-caill");
                 caillDOM.style.visibility = "visible";
                 return;
             }
-            cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
-            cuimse_an_comas(eirmeas, cuimseDOM);
-            // FUTURE -- bold recenlty-chosen cuimse (but only that one)
-            PÀIRTEAN_EIRMEAS = [];
-            oidheam_ùraich();
-            eirmeas_ùraich();
+            cuimse_suidhich_staid(cuimse.facal, "air sgeul");
+            eirmeas_ath_shuidhich();
+            geama_ùraich();
             geama_comhailteach();
+            staid_sgriobh();
         }
 
-
         function eirmeas_ùraich() {
-            for (let eirmeasÀite = 0; eirmeasÀite < DÀTA_GEAMA.uas_mheud_fad; eirmeasÀite++) {
-                let litirDOM = document.getElementById(`litir-eirmeas-${eirmeasÀite}`);
-                let [litir, oidheamÀite] = PÀIRTEAN_EIRMEAS[eirmeasÀite] || ["_"];
-                litirDOM.textContent = litir;
-                litirDOM.oidheamÀite = oidheamÀite;
-                if (litir === "_") {
-                    eirmeas_litir_à_comas(litirDOM);
-                } else {
-                    eirmeas_litir_an_comas(litirDOM);
-                }
+            for (const eirmeas of STAID.eirmeas) {
+                const litirDOM = document.getElementById(`eirmeas-${eirmeas.àite}`);
+                litirDOM.setAttribute("data-staid", eirmeas.staid);
+                litirDOM.textContent = eirmeas.litir;
             }
-            let caillDOM = document.getElementById("eirmeas-caill");
+            const caillDOM = document.getElementById("eirmeas-caill");
             caillDOM.style.visibility = "hidden";
         }
 
+        function cuimse_seall_aon() {
+            const dualachdan = [];
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                if (! ["air sgeul", "taisbeanta"].includes(cuimse.staid)) {
+                    dualachdan.push(cuimse.facal);
+                }
+            }
+            if (! dualachdan) {
+                return;
+            }
+            const àite = Math.floor(Math.random() * dualachdan.length);
+            const facal = dualachdan[àite];
+            cuimse_suidhich_staid(facal, "taisbeanta");
+            eirmeas_ath_shuidhich();
+            geama_ùraich();
+            geama_comhailteach();
+            staid_sgriobh();
+        }
 
-        function meur_chlàr_tachairt(tachairt) {
-            if (GEAMA_COMHAILTEACH) {
+        function cuimse_suidhich_staid(facal, staidÙr, roghainnean={}) {
+            // sonn(hidden), soillsichte(highlighted), air sgeul(found), taisbeanta(shown)
+            const cuimse = STAID.cuimsean[facal];
+            if (cuimse.staid === staidÙr) {
                 return;
             }
-            if (tachairt.key === "Backspace") {
-                tachairt.stopPropagation();
-                tachairt.preventDefault();
-                PÀIRTEAN_EIRMEAS.pop();
-                oidheam_ùraich();
-                eirmeas_ùraich();
+            // TRANSITIONS
+            // sonn -> soillsichte          -- OK, FUTURE will happen when any eirmeas.litir is in cuimse.facal
+            // sonn -> air sgeul            -- OK, happens during eirmeas_tomhais() (before we know how to highlight)
+            // sonn -> taisbeanta           -- OK, happens during cuimse_seall_aon()
+            // soillsichte -> sonn          -- OK, happens during eirmeas_ath_shuidhich()
+            // soillsichte -> air sgeul     -- OK, happens during eirmeas_tomhais() (once we know how to highlight)
+            // soillsichte -> taisbeanta    -- OK, happens during eirmeas_tomhais() (once we know how to highlight)
+            // air sgeul -> sonn            -- NOPE
+            // air sgeul -> soillsichte     -- NOPE
+            // air sgeul -> taisbeanta      -- NOPE
+            // taisbeanta -> sonn           -- NOPE
+            // taisbeanta -> soillsichte    -- NOPE
+            // taisbeanta -> air sgeul      -- NOPE, maybe OK during eirmeas_tomhais() (user re-types a shown cuimse)
+            let dèanE = false;
+            if (["sonn", "soillsichte"].includes(cuimse.staid)) {
+                dèanE = true;
+            }
+            if (staidÙr === "air sgeul") {
+                dèanE = true;
+            }
+            if (! dèanE) {
                 return;
             }
-            if (tachairt.key === "Enter") {
-                tachairt.stopPropagation();
-                tachairt.preventDefault();
-                eirmeas_tomhais();
-                return;
+            const cuimseDOM = document.getElementById(`cuimse-${cuimse.facal}`);
+            if (["air sgeul", "taisbeanta"].includes(staidÙr)) {
+                for (const [i, litir] of cuimse.facal.split("").entries()) {
+                    const litirDOM = document.getElementById(`cuimse-${cuimse.facal}-${i}`);
+                    litirDOM.textContent = litir;
+                }
+                cuimseDOM.setAttribute("alt", cuimse);
+                cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse.facal}&slang=gd&wholeword=true`);
+                cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
+                cuimseDOM.setAttribute("target", "_blank");
             }
-            if (LITRICHEAN_ANNS_NA_CUIMSEAN[tachairt.key] || "aeiou".includes(tachairt.key)) {
-                tachairt.stopPropagation();
-                tachairt.preventDefault();
-                eirmeas_cuir_ris_litir(tachairt.key);
-                return;
+            cuimse.staid = staidÙr;
+            cuimseDOM.setAttribute("data-staid", cuimse.staid);
+            if (roghainnean.sgrolaich ?? true) {
+                cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
             }
         }
 
-
-        function meur_chlàr_an_comas() {
+        function meur_chlàr_suidheachadh() {
             document.addEventListener("keydown", (tachairt) => {
                 if (tachairt.key === "Enter") {
                     // when oidheam litir has focus, hitting <Enter> would cause a click
@@ -365,81 +406,57 @@
             document.addEventListener("keyup", meur_chlàr_tachairt);
         }
 
-
-        function staid_a_gheama_leugh() {
-            if (ATH_SHUIDHICH_GEAMA === "true") {
-                localStorage.removeItem("staid a' gheama");
-                window.location.href = window.location.href.split("?")[0];
+        function meur_chlàr_tachairt(tachairt) {
+            if (STAID.comhailteach) {
                 return;
             }
-            let staidAmh = localStorage.getItem("staid a' gheama");
-            if (! staidAmh) {
+            if (tachairt.key === "Backspace") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
+                eirmeas_sguab_às(-1);
+                geama_ùraich();
                 return;
             }
-            let staid = JSON.parse(staidAmh);
-            if (staid.oidheam !== DÀTA_GEAMA.oidheam) {
-                localStorage.removeItem("staid a' gheama");
+            if (tachairt.key === "Enter") {
+                tachairt.stopPropagation();
+                tachairt.preventDefault();
+                eirmeas_tomhais();
                 return;
             }
-            for (let cuimse in staid.cuimsean) {
-                let cuimseDOM = document.getElementById(`cuimse-${cuimse}`);
-                if (cuimseDOM) {
-                    cuimse_an_comas(cuimse, cuimseDOM);
+            if ("?" === tachairt.key) {
+                cuimse_seall_aon();
+            }
+            const litirLeStràc = STRÀCADH[tachairt.key];
+            if (litirLeStràc && eirmeas_mu_dheireadh() === tachairt.key) {
+                // replace last letter of eirmeas with stràc version
+                for (const oidheam of STAID.oidheam) {
+                    if (oidheam.staid === "neo-taghta" && oidheam.litir === litirLeStràc) {
+                        eirmeas_sguab_às(-1);
+                        eirmeas_cuir_ris(oidheam.litir, oidheam.àite);
+                        geama_ùraich();
+                        return;
+                    }
                 }
             }
-            STAID_A_GHEAMA = staid;
-            geama_comhailteach();
-        }
-
-
-        function staid_a_gheama_sgrìobh(cuimse) {
-            STAID_A_GHEAMA.oidheam = DÀTA_GEAMA.oidheam;
-            STAID_A_GHEAMA.cuimsean[cuimse] = 1;
-            let staidAmh = JSON.stringify(STAID_A_GHEAMA);
-            localStorage.setItem("staid a' gheama", staidAmh);
-        }
-
-
-        function geama_comhailteach() {
-            let cunntadh = Object.keys(STAID_A_GHEAMA.cuimsean).length;
-            if (cunntadh !== DÀTA_GEAMA.cuimsean.length) {
-                return;
-            }
-            GEAMA_COMHAILTEACH = true;
-            let ionChurDOM = document.getElementById("ion-chur");
-            let àrd = window.getComputedStyle(ionChurDOM).height;
-            let comhailteachDOM = document.createElement("div");
-            comhailteachDOM.id = "geama-comhailteach";
-            comhailteachDOM.textContent = "sin sibh fhein!";
-            comhailteachDOM.style.height = àrd;
-            ionChurDOM.replaceWith(comhailteachDOM);
-            for (let oidheamÀite = 0; oidheamÀite < DÀTA_GEAMA.oidheam.length; oidheamÀite++) {
-                let litirDOM = document.getElementById(`litir-oidheam-${oidheamÀite}`);
-                oidheam_litir_à_comas(litirDOM);
-            }
-        }
-
-
-        function geama_dèan() {
-            if (DÀTA_GEAMA.error) {
-                let cearrDOM = document.createElement("div");
-                cearrDOM.textContent = DÀTA_GEAMA.error;
-                cearrDOM.classList.add("font-sans", "bg-red-300", "text-red-800", "px-4");
-                document.getElementById("an-t-oidheam").appendChild(cearrDOM);
-                return;
-            }
-            for (let cuimse of DÀTA_GEAMA.cuimsean) {
-                for (let litir of cuimse) {
-                    LITRICHEAN_ANNS_NA_CUIMSEAN[litir] = true;
+            for (const oidheam of STAID.oidheam) {
+                if (oidheam.litir === tachairt.key && oidheam.staid === "neo-taghta") {
+                    const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                    litirDOM.click();
+                    return;
                 }
             }
-            oidheam_dèan();
-            eirmeas_dèan();
-            meur_chlàr_an_comas();
-            staid_a_gheama_leugh();
+            if (litirLeStràc) {
+                // non-stràc isn't available, so add stràc version instead
+                for (const oidheam of STAID.oidheam) {
+                    if (oidheam.litir === litirLeStràc && oidheam.staid === "neo-taghta") {
+                        const litirDOM = document.getElementById(`oidheam-${oidheam.àite}`);
+                        litirDOM.click();
+                        return;
+                    }
+                }
+            }
         }
 
-
-        document.addEventListener("DOMContentLoaded", geama_dèan);
+        document.addEventListener("DOMContentLoaded", geama_suidheachadh);
     </script>
 {% endblock %}
