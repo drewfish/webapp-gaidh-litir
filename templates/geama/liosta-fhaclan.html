@@ -89,19 +89,7 @@
             // FUTURE -- set STAID.oidheam[].staid = "à comas" based on letters in cuimsean
             oidheam_ùraich();
             eirmeas_ùraich();
-            const eirmeas = eirmeas_sreang();
-            for (const cuimse of Object.values(STAID.cuimsean)) {
-                let staid = cuimse.staid;
-                if (staid === "soillsichte") {
-                    staid = "sonn";
-                }
-                if (staid === "sonn" && eirmeas && cuimse.facal.includes(eirmeas)) {
-                    staid = "soillsichte";
-                }
-                if (cuimse.staid !== staid) {
-                    cuimse_suidhich_staid(cuimse.facal, staid, {sgrolaich: false});
-                }
-            }
+            cuimsean_soillsich();
         }
 
         function geama_comhailteach() {
@@ -411,6 +399,22 @@
             cuimseDOM.setAttribute("data-staid", cuimse.staid);
             if (roghainnean.sgrolaich ?? true) {
                 cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+            }
+        }
+
+        function cuimsean_soillsich() {
+            const eirmeas = eirmeas_sreang();
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                let staid = cuimse.staid;
+                if (staid === "soillsichte") {
+                    staid = "sonn";
+                }
+                if (staid === "sonn" && eirmeas && cuimse.facal.includes(eirmeas)) {
+                    staid = "soillsichte";
+                }
+                if (cuimse.staid !== staid) {
+                    cuimse_suidhich_staid(cuimse.facal, staid, {sgrolaich: false});
+                }
             }
         }
 
