@@ -89,6 +89,19 @@
             // FUTURE -- set STAID.oidheam[].staid = "à comas" based on letters in cuimsean
             oidheam_ùraich();
             eirmeas_ùraich();
+            const eirmeas = eirmeas_sreang();
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                let staid = cuimse.staid;
+                if (staid === "soillsichte") {
+                    staid = "sonn";
+                }
+                if (staid === "sonn" && eirmeas && cuimse.facal.includes(eirmeas)) {
+                    staid = "soillsichte";
+                }
+                if (cuimse.staid !== staid) {
+                    cuimse_suidhich_staid(cuimse.facal, staid, {sgrolaich: false});
+                }
+            }
         }
 
         function geama_comhailteach() {
@@ -242,6 +255,14 @@
             }
         }
 
+        function eirmeas_sreang() {
+            let sreang = "";
+            for (const [litir] of STAID.eirmeas_taghta) {
+                sreang += litir;
+            }
+            return sreang;
+        }
+
         function eirmeas_suidheachadh() {
             const antEirmeasDOM = document.getElementById("an-t-eirmeas");
             for (const eirmeas of STAID.eirmeas) {
@@ -300,10 +321,7 @@
         }
 
         function eirmeas_tomhais() {
-            let eirmeas = "";
-            for (const [litir] of STAID.eirmeas_taghta) {
-                eirmeas += litir;
-            }
+            const eirmeas = eirmeas_sreang();
             if (! eirmeas) {
                 return;
             }

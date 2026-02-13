@@ -32,7 +32,9 @@
     @apply m-1 px-2 py-0 rounded-lg inline-block
 }
 .glf-cuimse[data-staid="sonn"] {}
-.glf-cuimse[data-staid="soillsichte"] {}
+.glf-cuimse[data-staid="soillsichte"] {
+    @apply text-yellow-900 bg-yellow-200/50
+}
 .glf-cuimse[data-staid="air sgeul"] {
     @apply font-bold text-green-900 bg-green-200
 }
