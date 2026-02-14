@@ -176,11 +176,15 @@
             }
             if (staid.seòrsa === "v2") {
                 for (const facal in staid.cuimsean) {
-                    cuimse_suidhich_staid(facal, staid.cuimsean[facal], {sgrolaich: false});
+                    if (STAID.cuimsean[facal]) {
+                        cuimse_suidhich_staid(facal, staid.cuimsean[facal], {sgrolaich: false});
+                    }
                 }
             } else {
                 for (const facal in staid.cuimsean) {
-                    cuimse_suidhich_staid(facal, "air sgeul", {sgrolaich: false});
+                    if (STAID.cuimsean[facal]) {
+                        cuimse_suidhich_staid(facal, "air sgeul", {sgrolaich: false});
+                    }
                 }
             }
         }
