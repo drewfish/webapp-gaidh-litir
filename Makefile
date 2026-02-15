@@ -1,8 +1,11 @@
 
+PYTHON_FILES := $(wildcard app/*.py .render/*.py)
+HTML_FILES := $(wildcard templates/*.html templates/*/*.html)
+
 build-css:
 	npx @tailwindcss/cli --minify --input ./app/tailwind.css --output ./static/tailwind.css
 
-check-types: app/*.py
+check-types: $(PYTHON_FILES)
 	uv run pyright $^
 
 local-setup:
@@ -11,19 +14,19 @@ local-setup:
 	@echo 'now run `source .venv/bin/activate.{sh,fish}`'
 	@echo 'now run `nvm use`'
 
-local-ci: app/*.py
+local-ci: $(PYTHON_FILES)
 	uv run ruff check $^
 	make check-types
 	shellcheck .render/*.sh
 
-local-format-html: templates/*.html templates/*/*.html
+local-format-html: $(HTML_FILES)
 	uv run djhtml $^
 
-local-format-python: app/*.py
+local-format-python: $(PYTHON_FILES)
 	uv run ruff check --fix $^
 	uv run ruff format $^
 
-local-format: app/*.py
+local-format: $(PYTHON_FILES)
 	make local-format-html
 	make local-format-python
 
