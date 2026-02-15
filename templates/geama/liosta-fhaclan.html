@@ -24,7 +24,6 @@
 
     <script type="text/javascript">
         const DÀTA_GEAMA = {{ game_data | json | safe }};
-        const ATH_SHUIDHICH_GEAMA = "{{ ath_shuidhich_geama }}";
         const STAID = {
             comhailteach: false,
             le_stràc: false,    // anns an oidheam
@@ -152,7 +151,7 @@
         }
 
         function staid_leugh() {
-            if (ATH_SHUIDHICH_GEAMA === "true") {
+            if (window.location.href.includes("?ath-shuidhich") || window.location.href.includes("?reset")) {
                 localStorage.removeItem("staid a' gheama");
                 window.location.href = window.location.href.split("?")[0];
                 return;

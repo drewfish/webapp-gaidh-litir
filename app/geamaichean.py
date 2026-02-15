@@ -3,7 +3,7 @@ import datetime
 import json
 import os.path
 import zoneinfo
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
 from .dependencies import DATA_DIR, RendererDep
 
@@ -11,12 +11,7 @@ router = APIRouter()
 
 
 @router.get("/liosta-fhaclan")
-async def liosta_fhaclan(render: RendererDep, request: Request) -> Any:
-    ath_shuidhich: str = "false"
-    if "reset" in request.query_params:
-        ath_shuidhich = "true"
-    if "ath-shuidhich" in request.query_params:
-        ath_shuidhich = "true"
+async def liosta_fhaclan(render: RendererDep) -> Any:
     game_data: Any = {
         "error": "failed to load game data",
     }
@@ -34,17 +29,11 @@ async def liosta_fhaclan(render: RendererDep, request: Request) -> Any:
     return render(
         "geama/liosta-fhaclan.html",
         game_data=game_data,
-        ath_shuidhich_geama=ath_shuidhich,
     )
 
 
 @router.get("/v2-liosta-fhaclan")
-async def v2_liosta_fhaclan(render: RendererDep, request: Request) -> Any:
-    ath_shuidhich: str = "false"
-    if "reset" in request.query_params:
-        ath_shuidhich = "true"
-    if "ath-shuidhich" in request.query_params:
-        ath_shuidhich = "true"
+async def v2_liosta_fhaclan(render: RendererDep) -> Any:
     game_data: Any = {
         "error": "failed to load game data",
     }
@@ -66,5 +55,4 @@ async def v2_liosta_fhaclan(render: RendererDep, request: Request) -> Any:
     return render(
         "geama/liosta-fhaclan.html",
         game_data=game_data,
-        ath_shuidhich_geama=ath_shuidhich,
     )
