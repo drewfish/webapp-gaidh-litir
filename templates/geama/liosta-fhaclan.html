@@ -3,9 +3,7 @@
 {% block content %}
     <div class="grid grid-cols-1 gap-1">
         <div id="instructions-en">
-            Find all the words using the provided letters.
-            You can only use each letter once.
-            <span class="glf-le-tathan">(You can use a hyphen multiple times.)</span>
+            Find all words using provided letters.
         </div>
         <div class="max-w-96 bg-indigo-200 rounded-md p-2 grid grid-cols-1 gap-x-2 gap-y-2 place-items-center">
             <div id="an-t-oidheam" class="text-lg font-mono"></div>
@@ -55,12 +53,6 @@
             oidheam_à_comas();
             oidheam_ùraich();
             geama_comhailteach();
-            if (!STAID.le_tàthan && !DÀTA_GEAMA.oidheam.includes("-")) {
-                const damnaichte = document.getElementsByClassName("glf-le-tathan");
-                for (const dom of damnaichte) {
-                    dom.style.display = "none";
-                }
-            }
         }
 
         function geama_ùraich() {
@@ -227,6 +219,9 @@
                     if (àite === oidheamÀite) {
                         eirmeas_sguab_às(eirmeasÀite);
                         geama_ùraich();
+                        // on the phone, it can be confusing if the unselected letter is still highlighted
+                        const litirDOM = document.getElementById(`oidheam-${oidheamÀite}`);
+                        litirDOM.blur();
                         return;
                     }
                 }
