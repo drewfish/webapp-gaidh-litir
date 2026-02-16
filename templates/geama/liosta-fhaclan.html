@@ -59,6 +59,7 @@
             "roi.": "preposition",
         };
         const DEIFINISEANAN = {};
+        let DEBUGGING_AN_COMAS = false;
 
         function debug_remote(payload) {
             const url = window.location.href.split("/").slice(0, 3).join("/") + "/api/v1/debug";
@@ -82,6 +83,12 @@
                 cearrDOM.classList.add("glf-geama-error");
                 document.getElementById("an-t-oidheam").appendChild(cearrDOM);
                 return;
+            }
+            if (window.location.href.includes("?drew")) {
+                DEBUGGING_AN_COMAS = true;
+            } else {
+                const ionLoidhneDOM = document.getElementById("deifinisean-ion-loidhne");
+                ionLoidhneDOM.style.display = "none";
             }
             staid_suidheachadh();
             oidheam_suidheachadh();
@@ -446,6 +453,13 @@
                     const litirDOM = document.getElementById(`cuimse-${cuimse.facal}-${i}`);
                     litirDOM.textContent = litir;
                 }
+                if (! DEBUGGING_AN_COMAS) {
+                    cuimseDOM.setAttribute("alt", cuimse);
+                    cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse.facal}&slang=gd&wholeword=true`);
+                    cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
+                    cuimseDOM.setAttribute("target", "_blank");
+                    cuimseDOM.style.cursor = "pointer";
+                }
             }
             cuimse.staid = staidÙr;
             cuimseDOM.setAttribute("data-staid", cuimse.staid);
@@ -455,6 +469,9 @@
         }
 
         function cuimsean_suidheachadh() {
+            if (! DEBUGGING_AN_COMAS) {
+                return;
+            }
             for (const cuimse of Object.values(STAID.cuimsean)) {
                 const cuimseDOM = document.getElementById(`cuimse-${cuimse.facal}`);
                 cuimseDOM.addEventListener("click", () => {
@@ -486,6 +503,9 @@
         }
 
         function deifinisean_seall(facal, roghainnean={}) {
+            if (! DEBUGGING_AN_COMAS) {
+                return;
+            }
             // debug_remote({"--where": "deifinisean_seall()", facal, roghainnean});
             const deifnan = DEIFINISEANAN[facal] || [];
             const liostaDOMs = document.getElementsByClassName("glf-liosta-dheifinisean");
@@ -513,8 +533,8 @@
                 }
             }
             const ionLoidhneDOM = document.getElementById("deifinisean-ion-loidhne");
-            const stoidhle = window.getComputedStyle(ionLoidhneDOM);
-            debug_remote({"--where": "deifinisean_seall() ion-loidhne", display: stoidhle.display, roghainnean: JSON.stringify(roghainnean)});
+            let stoidhle = window.getComputedStyle(ionLoidhneDOM);
+            // debug_remote({"--where": "deifinisean_seall() ion-loidhne", display: stoidhle.display, roghainnean: JSON.stringify(roghainnean)});
             if (stoidhle.display !== "none") {
                 return;
             }
@@ -523,9 +543,15 @@
             }
             const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
             priobUinneagDOM.style.display = "flex";
+            stoidhle = window.getComputedStyle(priobUinneagDOM);
+            const stoidhleObj = {};
+            for (let i = 0; i < stoidhle.length; i++) {
+                const k = stoidhle[i];
+                stoidhleObj[k] = stoidhle.getPropertyValue(k);
+            }
             debug_remote({
                 "--where": "deifinisean_seall() priob-uinneag",
-                display: window.getComputedStyle(priobUinneagDOM).display,
+                style: stoidhleObj,
             });
         }
 
