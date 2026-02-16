@@ -59,7 +59,7 @@
             "roi.": "preposition",
         };
         const DEIFINISEANAN = {};
-        let DEBUGGING_AN_COMAS = false;
+        let DEBUGGING_AN_COMAS = true;
 
         function debug_remote(payload) {
             const url = window.location.href.split("/").slice(0, 3).join("/") + "/api/v1/debug";
@@ -543,6 +543,7 @@
             }
             const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
             priobUinneagDOM.style.display = "flex";
+            /* DEBUGGING -- are things working now?
             stoidhle = window.getComputedStyle(priobUinneagDOM);
             const stoidhleObj = {};
             for (let i = 0; i < stoidhle.length; i++) {
@@ -553,6 +554,7 @@
                 "--where": "deifinisean_seall() priob-uinneag",
                 style: stoidhleObj,
             });
+            */
         }
 
         function deifinisean_folaich() {

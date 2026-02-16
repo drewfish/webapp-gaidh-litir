@@ -38,7 +38,7 @@
 }
 .glf-cuimse {
     @apply m-1 px-2 py-0 rounded-lg inline-block;
-    cursor: default;
+    cursor: pointer;
 }
 .glf-cuimse[data-staid="sonn"] {}
 .glf-cuimse[data-staid="soillsichte"] {
