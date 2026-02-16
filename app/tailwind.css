@@ -80,7 +80,7 @@
     @apply text-amber-600/50;
 }
 #glf-priob-uinneag {
-    position: fixed !important;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100dvw;
@@ -91,7 +91,7 @@
     padding: 3em;
 }
 #glf-priob-uinneag .glf-deifinisean {
-    position: fixed !important;
+    position: fixed;
     top: 10dvh;
     left: 10dvw;
     width: 80dvw;
