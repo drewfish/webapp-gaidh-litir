@@ -60,6 +60,21 @@
         };
         const DEIFINISEANAN = {};
 
+        function debug_remote(payload) {
+            const url = window.location.href.split("/").slice(0, 3).join("/") + "/api/v1/debug";
+            const opts = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            };
+            // we don't care about errors, since we'll be watching the request logs
+            fetch(url, opts).catch(err => {
+                console.log("--DEBUG ERR--", err, "--", payload);
+            });
+        }
+
         function geama_suidheachadh() {
             if (DÀTA_GEAMA.error) {
                 const cearrDOM = document.createElement("div");
@@ -104,7 +119,6 @@
                     }
                 }
             }
-            // FUTURE -- set STAID.oidheam[].staid = "à comas" based on letters in cuimsean
             oidheam_ùraich();
             eirmeas_ùraich();
             cuimsean_soillsich();
@@ -404,7 +418,7 @@
                 return;
             }
             // TRANSITIONS
-            // sonn -> soillsichte          -- OK, FUTURE will happen when any eirmeas.litir is in cuimse.facal
+            // sonn -> soillsichte          -- OK, happens when any eirmeas.litir is in cuimse.facal
             // sonn -> air sgeul            -- OK, happens during eirmeas_tomhais() (before we know how to highlight)
             // sonn -> taisbeanta           -- OK, happens during cuimse_seall_aon()
             // soillsichte -> sonn          -- OK, happens during eirmeas_ath_shuidhich()
@@ -472,6 +486,7 @@
         }
 
         function deifinisean_seall(facal, roghainnean={}) {
+            // debug_remote({"--where": "deifinisean_seall()", facal, roghainnean});
             const deifnan = DEIFINISEANAN[facal] || [];
             const liostaDOMs = document.getElementsByClassName("glf-liosta-dheifinisean");
             for (const liostaDOM of liostaDOMs) {
@@ -499,7 +514,8 @@
             }
             const ionLoidhneDOM = document.getElementById("deifinisean-ion-loidhne");
             const stoidhle = window.getComputedStyle(ionLoidhneDOM);
-            if (stoidhle.display === "block") {
+            debug_remote({"--where": "deifinisean_seall() ion-loidhne", display: stoidhle.display, roghainnean: JSON.stringify(roghainnean)});
+            if (stoidhle.display !== "none") {
                 return;
             }
             if (! (roghainnean.fosgail ?? false)) {
@@ -507,6 +523,10 @@
             }
             const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
             priobUinneagDOM.style.display = "flex";
+            debug_remote({
+                "--where": "deifinisean_seall() priob-uinneag",
+                display: window.getComputedStyle(priobUinneagDOM).display,
+            });
         }
 
         function deifinisean_folaich() {

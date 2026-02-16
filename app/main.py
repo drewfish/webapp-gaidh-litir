@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from app import geamaichean
+from app import api_v1, geamaichean
 
 from .dependencies import RendererDep
 
@@ -12,6 +12,7 @@ app = FastAPI(
     default_response_class=HTMLResponse,
 )
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(api_v1.router)
 app.include_router(geamaichean.router)
 
 
