@@ -1,54 +1,101 @@
 @import "tailwindcss";
 @source "../templates";
+@utility geama-button {
+    @apply px-2 py-1 rounded-lg shadow-md;
+    cursor: pointer;
+}
 .glf-button {
-    @apply px-2 py-1 rounded-lg shadow-md
+    @apply geama-button;
 }
 #glf-geama-error {
-    @apply font-sans bg-red-300 text-red-800 px-4
+    @apply font-sans bg-red-300 text-red-800 px-4;
 }
 .glf-oidheam {
-    @apply px-2 py-1 rounded-lg shadow-md mr-1 font-bold
+    @apply geama-button mr-1 font-bold;
 }
 .glf-oidheam-far {
-    @apply ml-2
+    @apply ml-2;
 }
 .glf-oidheam[data-staid="neo-taghta"] {
-    @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-400
+    @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-400;
 }
 .glf-oidheam[data-staid="taghta"] {
-    @apply text-blue-800 bg-blue-600/75 hover:text-blue-400 hover:bg-blue-600
+    @apply text-blue-800 bg-blue-600/75 hover:text-blue-400 hover:bg-blue-600;
 }
 .glf-oidheam[data-staid="à comas"] {
-    @apply text-gray-400/25 bg-gray-100/25
+    @apply text-gray-400/25 bg-gray-100/25;
+    cursor: default;
 }
 .glf-eirmeas {
-    @apply px-2 py-1 rounded-lg shadow-md mr-1 font-bold
+    @apply geama-button mr-1 font-bold;
 }
 .glf-eirmeas[data-staid="neo-taghta"] {
-    @apply px-2 py-1 rounded-lg shadow-md text-green-100 bg-green-100
+    @apply geama-button text-green-100 bg-green-100;
+    cursor: default;
 }
 .glf-eirmeas[data-staid="taghta"] {
-    @apply px-2 py-1 rounded-lg shadow-md text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600
+    @apply geama-button text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600;
 }
 .glf-cuimse {
-    @apply m-1 px-2 py-0 rounded-lg inline-block
+    @apply m-1 px-2 py-0 rounded-lg inline-block;
+    cursor: pointer;
 }
 .glf-cuimse[data-staid="sonn"] {}
 .glf-cuimse[data-staid="soillsichte"] {
-    @apply text-yellow-900 bg-yellow-200/50
+    @apply text-yellow-900 bg-yellow-200/50;
 }
 .glf-cuimse[data-staid="air sgeul"] {
-    @apply font-bold text-green-900 bg-green-200
+    @apply font-bold text-green-900 bg-green-200;
 }
 .glf-cuimse[data-staid="taisbeanta"] {
-    @apply font-bold text-yellow-900 bg-yellow-200/50
+    @apply font-bold text-yellow-900 bg-yellow-200/50;
 }
 .glf-cuimse-litir {
-    @apply inline-block w-4
+    @apply inline-block w-4;
 }
 #glf-comhailteach {
     display: flex;
     align-items: center;
     justify-content: center;
-    @apply px-4 py-1 rounded-lg text-lg font-bold text-green-950 bg-green-200
+    @apply px-4 py-1 rounded-lg text-lg font-bold text-green-950 bg-green-200;
+}
+.glf-deifinisean {
+    @apply p-3 text-amber-600 bg-amber-100 rounded-md max-h-[70dvh] overflow-y-auto;
+    min-width: 20rem;
+    max-width: 64rem;
+}
+.glf-deifinisean ul {
+    @apply list-inside list-disc;
+}
+.glf-deifinisean li::marker {
+    @apply text-amber-600/50;
+}
+.glf-deifinisean .glf-deifn-seorsa {
+    @apply text-sm italic no-underline text-amber-600/50 mr-1;
+}
+.glf-deifinisean .glf-ionadaich {
+    @apply text-amber-600/50;
+}
+.glf-deifinisean .glf-eadar-radh {
+    @apply text-amber-600/50;
+}
+#glf-priob-uinneag {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(200, 200, 200, 0.5);
+    z-index: 1000;
+    cursor: pointer;
+    padding: 3em;
+}
+#glf-priob-uinneag .glf-deifinisean {
+    position: fixed;
+    top: 10dvh;
+    left: 10dvw;
+    width: 80dvw;
+    min-height: 20dvh;
+    max-height: 80dvh;
+    @apply border border-amber-300;
 }

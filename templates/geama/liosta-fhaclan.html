@@ -1,24 +1,36 @@
 {% extends "base.html" %}
 {% block title %}Liosta-Fhaclan{% endblock %}
 {% block content %}
-    <div class="max-w-140">
-        <div id="instructions-en">
-            Find all words using the provided letters.
-        </div>
-        <div class="w-full mb-1 bg-indigo-200 rounded-md p-2 flex flex-col place-items-center">
-            <div id="an-t-oidheam" class="mb-2 text-lg font-mono"></div>
-            <div id="ion-chur">
-                <span id="an-t-eirmeas" class="text-lg font-mono"></span>
-                <button id="eirmeas-caill" class="mr-2 glf-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
-                <button id="tomhais" class="glf-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
+    <div id="instructions-en">
+        Find all words using the provided letters.
+    </div>
+    <div class="flex flex-row">
+        <div class="max-w-140">
+            <div class="w-full mb-1 bg-indigo-200 rounded-md p-2 flex flex-col place-items-center">
+                <div id="an-t-oidheam" class="mb-2 text-lg font-mono"></div>
+                <div id="ion-chur">
+                    <span id="an-t-eirmeas" class="text-lg font-mono"></span>
+                    <button id="eirmeas-caill" class="mr-2 glf-button bg-red-300 hover:bg-red-400 text-red-800 font-bold">X</button>
+                    <button id="tomhais" class="glf-button bg-green-600 hover:bg-green-800 text-white">tomhais!</button>
+                </div>
+            </div>
+            <div class="w-full max-h-[70dvh] bg-indigo-200 rounded-md p-2 overflow-y-auto">
+                <div id="na-cuimsean" class="font-mono text-center">
+                    {%- for cuimse in game_data.cuimsean %}
+                        <a id="cuimse-{{cuimse.facal}}" data-staid="sonn" class="glf-cuimse">{%- for litir in cuimse.facal %}<span id="cuimse-{{cuimse.facal}}-{{loop.index0}}" class="glf-cuimse-litir">_</span>{% endfor -%}</a>
+                    {%- endfor %}
+                </div>
             </div>
         </div>
-        <div class="w-full max-h-[70dvh] bg-indigo-200 rounded-md p-2 overflow-y-auto">
-            <div id="na-cuimsean" class="font-mono text-center">
-                {%- for cuimse in game_data.cuimsean %}
-                    <a id="cuimse-{{cuimse.facal}}" data-staid="sonn" class="glf-cuimse">{%- for litir in cuimse.facal %}<span id="cuimse-{{cuimse.facal}}-{{loop.index0}}" class="glf-cuimse-litir">_</span>{% endfor -%}</a>
-                {%- endfor %}
+        <div id="deifinisean-ion-loidhne" class="ml-1 hidden md:block">
+            <div class="glf-deifinisean">
+                <ul class="glf-liosta-dheifinisean"></ul>
             </div>
+        </div>
+    </div>
+    <div id="glf-priob-uinneag" class="hidden">
+        <div class="glf-deifinisean">
+            <ul class="glf-liosta-dheifinisean"></ul>
         </div>
     </div>
 
@@ -34,6 +46,18 @@
             cuimsean: {},
         };
         const STRÀCADH = { "a": "à", "e": "è", "i": "ì", "o": "ò", "u": "ù" }
+        const SEÒRSAN_FHACLAN = {
+            "boir.": "feminine noun",
+            "bua.": "adjective",
+            "co-ghn.": "adverb",
+            "cst.": "question",
+            "fir.": "masculine noun",
+            "gn.": "verb",
+            "m.-fh.": "partical",
+            "nsg.": "conjuction",
+            "roi. gin.": "preposition + genitive",
+            "roi.": "preposition",
+        };
         const DEIFINISEANAN = {};
 
         function geama_suidheachadh() {
@@ -47,11 +71,13 @@
             staid_suidheachadh();
             oidheam_suidheachadh();
             eirmeas_suidheachadh();
+            cuimsean_suidheachadh();
             meur_chlàr_suidheachadh();
             staid_leugh();
             oidheam_à_comas();
             oidheam_ùraich();
             geama_comhailteach();
+            deifinisean_suidheachadh();
         }
 
         function geama_ùraich() {
@@ -334,6 +360,7 @@
             geama_ùraich();
             geama_comhailteach();
             staid_sgriobh();
+            deifinisean_seall(eirmeas, {fosgail: true});
         }
 
         function eirmeas_ùraich() {
@@ -405,15 +432,20 @@
                     const litirDOM = document.getElementById(`cuimse-${cuimse.facal}-${i}`);
                     litirDOM.textContent = litir;
                 }
-                cuimseDOM.setAttribute("alt", cuimse);
-                cuimseDOM.setAttribute("href", `https://learngaelic.scot/dictionary/index.jsp?abairt=${cuimse.facal}&slang=gd&wholeword=true`);
-                cuimseDOM.setAttribute("rel", "external nofollow noopener noreferrer");
-                cuimseDOM.setAttribute("target", "_blank");
             }
             cuimse.staid = staidÙr;
             cuimseDOM.setAttribute("data-staid", cuimse.staid);
             if (roghainnean.sgrolaich ?? true) {
                 cuimseDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+            }
+        }
+
+        function cuimsean_suidheachadh() {
+            for (const cuimse of Object.values(STAID.cuimsean)) {
+                const cuimseDOM = document.getElementById(`cuimse-${cuimse.facal}`);
+                cuimseDOM.addEventListener("click", () => {
+                    deifinisean_seall(cuimse.facal, { fosgail: true });
+                });
             }
         }
 
@@ -431,6 +463,55 @@
                     cuimse_suidhich_staid(cuimse.facal, staid, {sgrolaich: false});
                 }
             }
+        }
+
+        function deifinisean_suidheachadh() {
+            const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
+            priobUinneagDOM.addEventListener("click", deifinisean_folaich);
+            deifinisean_seall(DÀTA_GEAMA.oidheam, {fosgail: false});
+        }
+
+        function deifinisean_seall(facal, roghainnean={}) {
+            const deifnan = DEIFINISEANAN[facal] || [];
+            const liostaDOMs = document.getElementsByClassName("glf-liosta-dheifinisean");
+            for (const liostaDOM of liostaDOMs) {
+                liostaDOM.replaceChildren();
+                for (const deifn of deifnan) {
+                    const clàrDOM = document.createElement("li");
+                    const seòrsaDOM = document.createElement("abbr");
+                    seòrsaDOM.classList.add("glf-deifn-seorsa");
+                    seòrsaDOM.textContent = deifn["seòrsa"];
+                    if (SEÒRSAN_FHACLAN[deifn["seòrsa"]]) {
+                        seòrsaDOM.setAttribute("title", SEÒRSAN_FHACLAN[deifn["seòrsa"]]);
+                    }
+                    let sreang = deifn["deifinisean"];
+                    if (roghainnean.ionadaich && sreang.includes(facal)) {
+                        // redact facal in deifinisean
+                        // FUTURE -- ... or maybe not?  redacting -is- a clue to the player
+                        sreang = sreang.replace(facal, '<span class="glf-ionadaich">' + "_".repeat(facal.length) + '</span>');
+                    }
+                    // style parentheses
+                    sreang = sreang.replace(/(\([^)]*\))/g, '<span class="glf-eadar-radh">$1</span>');
+                    clàrDOM.innerHTML = sreang;
+                    clàrDOM.prepend(seòrsaDOM);
+                    liostaDOM.appendChild(clàrDOM);
+                }
+            }
+            const ionLoidhneDOM = document.getElementById("deifinisean-ion-loidhne");
+            const stoidhle = window.getComputedStyle(ionLoidhneDOM);
+            if (stoidhle.display === "block") {
+                return;
+            }
+            if (! (roghainnean.fosgail ?? false)) {
+                return;
+            }
+            const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
+            priobUinneagDOM.style.display = "flex";
+        }
+
+        function deifinisean_folaich() {
+            const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
+            priobUinneagDOM.style.display = "none";
         }
 
         function meur_chlàr_suidheachadh() {
