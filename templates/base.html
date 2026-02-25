@@ -3,6 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Handlee" rel="stylesheet">
         <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/16x16.png">
@@ -10,14 +13,14 @@
         <title>{% block title %}Gàidh-Litir{% endblock %}</title>
     </head>
     <body class="flex flex-col">
-        <div class="h-9 flex flex-row bg-sky-300 text-sky-800 text-lg justify-between items-center">
-            <div class="px-3">
+        <div class="h-9 flex flex-row bg-sky-300 text-sky-800 text-lg justify-between items-center" style="">
+            <div class="px-3" style="font-family: 'Handlee';">
                 <a href="/">Gàidh-Litir</a>{% if self.title() != "Gàidh-Litir" %} : {{ self.title() }}{% endif %}
             </div>
             <div class="relative group">
                 <div class="absolute right-1 mt-0 px-3 w-max hidden group-hover:block z-10 bg-sky-300 border border-sky-400 shadow-lg">
                     <a class="block" href="/">ceann</a>
-                    <a class="block" href="/liosta-fhaclan"><span class="text-sm">geama</span> liosta-fhaclan</a>
+                    <a class="block" href="/liosta-fhaclan"><span class="text-sm">geama</span> Liosta-Fhaclan</a>
                 </div>
                 <button class="px-3">☰</button>
             </div>
