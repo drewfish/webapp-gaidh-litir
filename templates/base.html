@@ -17,17 +17,31 @@
             <div class="px-3" style="font-family: 'Handlee';">
                 <a href="/">Gàidh-Litir</a>{% if self.title() != "Gàidh-Litir" %} : {{ self.title() }}{% endif %}
             </div>
-            <div class="relative group">
-                <div class="absolute right-1 mt-0 px-3 w-max hidden group-hover:block z-10 bg-sky-300 border border-sky-400 shadow-lg">
+            <div class="relative">
+                <div id="clàr-iùil-làraich" class="absolute top-7 right-1 mt-0 px-3 w-max hidden z-10 bg-sky-300 border border-sky-400 shadow-lg">
                     <a class="block" href="/">ceann</a>
                     <a class="block" href="/liosta-fhaclan"><span class="text-sm">geama</span> Liosta-Fhaclan</a>
                 </div>
-                <button class="px-3">☰</button>
+                <button id="clàr-iùil-làraich-ìomhaigheag" class="px-3 mr-1 rounded-lg hover:bg-sky-600 cursor-pointer">☰</button>
             </div>
         </div>
         <div class="px-3 py-1">
             {% block content %}{% endblock %}
         </div>
+        <script type="text/javascript">
+            function làrach_lìn_suidheachadh() {
+                const ìomhaigheagDOM = document.getElementById("clàr-iùil-làraich-ìomhaigheag");
+                const clàrIùilDOM = document.getElementById("clàr-iùil-làraich");
+                ìomhaigheagDOM.addEventListener("click", () => {
+                    if (clàrIùilDOM.style.display === "block") {
+                        clàrIùilDOM.style.display = "none";
+                    } else {
+                        clàrIùilDOM.style.display = "block";
+                    }
+                });
+            }
+            document.addEventListener("DOMContentLoaded", làrach_lìn_suidheachadh);
+        </script>
     </body>
 </html>
 
