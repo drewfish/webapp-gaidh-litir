@@ -94,14 +94,16 @@
             }
             for (const [eirmeasÀite, [litir, oidheamÀite]] of STAID.eirmeas_taghta.entries()) {
                 const oidheam = STAID.oidheam[oidheamÀite];
-                const eirmeas = STAID.eirmeas[eirmeasÀite];
-                eirmeas.staid = "taghta";
-                eirmeas.litir = litir;
                 if (oidheam.staid === "neo-taghta") {
                     oidheam.staid = "taghta";
                     if (oidheam.litir === "-" && eirmeas_mu_dheireadh() !== "-") {
                         oidheam.staid = "neo-taghta";
                     }
+                }
+                const eirmeas = STAID.eirmeas[eirmeasÀite];
+                if (eirmeas) {
+                    eirmeas.staid = "taghta";
+                    eirmeas.litir = litir;
                 }
             }
             oidheam_ùraich();
@@ -321,6 +323,9 @@
         }
 
         function eirmeas_cuir_ris(litir, oidheamÀite) {
+            if (STAID.eirmeas_taghta.length >= DÀTA_GEAMA.uas_mheud_fad) {
+                return;
+            }
             STAID.eirmeas_taghta.push([litir, oidheamÀite]);
         }
 
