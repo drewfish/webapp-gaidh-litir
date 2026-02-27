@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Lorg Faclan{% endblock %}
+{% block content %}
+    <form method="post" action="/lorg-faclan" class="ilf-fuirm">
+        <div class="p-2 mb-1 w-fit grid grid-cols-6 gap-x-1 bg-indigo-200 rounded-md">
+            <label class="col-span-2 text-left text-xs">aig an<br/><span class="text-base">toiseach</span></label>
+            <label class="col-span-2 text-center text-xs">àite<br/><span class="text-base">sam bith</span></label>
+            <label class="col-span-2 text-right text-xs">aig an<br/><span class="text-base">deireadh</span></label>
+
+            <input class="col-span-2 text-left" type="text" name="toiseach" value="{{ ionchur.toiseach }}" />
+            <input class="col-span-2 text-center" type="text" name="gach_aite" value="{{ ionchur.gach_aite }}" >
+            <input class="col-span-2 text-right" type="text" name="deireadh" value="{{ ionchur.deireadh }}" >
+
+            <label class="col-start-1 col-span-3 text-right">litrichean an comas</label>
+            <input class="col-span-2 text-left" type="text" name="litrn_tha" value="{{ ionchur.litrn_tha }}" >
+
+            <label class="col-start-1 col-span-3 text-right">litrichean à comas</label>
+            <input class="col-span-2" type="text" name="litrn_chan" value="{{ ionchur.litrn_chan }}" >
+
+            <label class="col-start-1 col-span-3 text-right text-xs">ann am <span class="text-base">Beurla</span></label>
+            <input class="col-span-2" type="text" name="beurla" value="{{ ionchur.beurla }}" >
+
+            <label class="col-start-1 col-span-3 text-right">fad</label>
+            <div class="col-span-2">
+                <select id="ilf-fad-coimheas" name="fad_coimheas">
+                    <option value="eq" {% if ionchur.fad_coimheas == 'eq' %}selected{% endif %}> = </option>
+                    <option value="lt" {% if ionchur.fad_coimheas == 'lt' %}selected{% endif %}> &lt; </option>
+                    <option value="le" {% if ionchur.fad_coimheas == 'le' %}selected{% endif %}> &le; </option>
+                    <option value="gt" {% if ionchur.fad_coimheas == 'gt' %}selected{% endif %}> &gt; </option>
+                    <option value="ge" {% if ionchur.fad_coimheas == 'ge' %}selected{% endif %}> &ge; </option>
+                </select>
+                <select id="ilf-fad-teòrr" name="fad_teorr">
+                    <option value="">---</option>
+                    {%- for i in range(2,20) %}
+                        <option value="{{i}}" {% if ionchur.fad_teorr|int == i %}selected{% endif %}>{{ i }}</option>
+                    {%- endfor %}
+                </select>
+            </div>
+
+            <label class="col-start-1 text-center">seòrsa</label>
+            <div class="ilf-seorsachan col-span-5">
+                {%- for seòrsa, beurla in SEÒRSACHAN_TAGHTA.items() %}
+                    <label for="ilf-seòrsa-{{seòrsa}}">
+                        <input id="ilf-seòrsa-{{seòrsa}}" type="checkbox" name="seorsa" value="{{seòrsa}}" {% if seòrsa in ionchur.seorsa %}checked{% endif %}/>
+                        <abbr title="{{ beurla }}" >{{seòrsa}}</abbr>
+                    </label>
+                {%- endfor %}
+            </div>
+
+            <button class="col-start-2 col-span-4" type="submit">lorg!</button>
+        </div>
+    </form>
+    {%- if clàran %}
+        <div class="ilf-claran">
+            {%- for clàr in clàran %}
+                <a class="ilf-clar">{{clàr.facal}}</a>
+            {%- endfor %}
+        </div>
+    {%- endif %}
+{% endblock %}

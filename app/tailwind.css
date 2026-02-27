@@ -1,17 +1,16 @@
 @import "tailwindcss";
 @source "../templates";
-@utility geama-button {
-    @apply px-2 py-1 rounded-lg shadow-md;
-    cursor: pointer;
+@utility gl-button {
+    @apply px-2 py-1 rounded-lg shadow-md cursor-pointer;
 }
 .glf-button {
-    @apply geama-button;
+    @apply gl-button;
 }
 #glf-geama-error {
     @apply font-sans bg-red-300 text-red-800 px-4;
 }
 .glf-oidheam {
-    @apply geama-button mr-1 font-bold;
+    @apply gl-button mr-1 font-bold;
 }
 .glf-oidheam-far {
     @apply ml-2;
@@ -23,22 +22,19 @@
     @apply text-blue-800 bg-blue-600/75 hover:text-blue-400 hover:bg-blue-600;
 }
 .glf-oidheam[data-staid="à comas"] {
-    @apply text-gray-400/25 bg-gray-100/25;
-    cursor: default;
+    @apply text-gray-400/25 bg-gray-100/25 cursor-default;
 }
 .glf-eirmeas {
-    @apply geama-button mr-1 font-bold;
+    @apply gl-button mr-1 font-bold;
 }
 .glf-eirmeas[data-staid="neo-taghta"] {
-    @apply geama-button text-green-100 bg-green-100;
-    cursor: default;
+    @apply gl-button text-green-100 bg-green-100 cursor-default;
 }
 .glf-eirmeas[data-staid="taghta"] {
-    @apply geama-button text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600;
+    @apply gl-button text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600;
 }
 .glf-cuimse {
-    @apply m-1 px-2 py-0 rounded-lg inline-block;
-    cursor: pointer;
+    @apply m-1 px-2 py-0 rounded-lg inline-block cursor-pointer;
 }
 .glf-cuimse[data-staid="sonn"] {}
 .glf-cuimse[data-staid="soillsichte"] {
@@ -87,8 +83,8 @@
     height: 100dvh;
     background-color: rgba(200, 200, 200, 0.5);
     z-index: 1000;
-    cursor: pointer;
     padding: 3em;
+    @apply cursor-pointer;
 }
 #glf-priob-uinneag .glf-deifinisean {
     position: fixed;
@@ -98,4 +94,29 @@
     min-height: 20dvh;
     max-height: 80dvh;
     @apply border border-amber-300;
+}
+
+.ilf-fuirm button {
+    @apply gl-button;
+    @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-400;
+}
+.ilf-fuirm input {
+    @apply px-1 text-blue-950 bg-blue-100;
+}
+.ilf-fuirm input[type="text"] {
+    @apply max-w-40 mb-1;
+}
+.ilf-fuirm select {
+    @apply px-1 text-blue-950 bg-blue-100;
+}
+.ilf-seorsachan {
+    @apply grid gap-px;
+    grid-template-columns: repeat(auto-fill, 5em);
+}
+.ilf-claran {
+    @apply p-2 max-w-140 bg-amber-100 text-amber-600 rounded-md grid gap-px;
+    grid-template-columns: repeat(auto-fill, minmax(8em, 10em));
+}
+.ilf-clar {
+    @apply px-2 my-1 inline-block rounded hover:bg-amber-200;
 }
