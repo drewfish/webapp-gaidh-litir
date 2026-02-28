@@ -96,6 +96,9 @@
     @apply border border-amber-300;
 }
 
+form.ilf-fuirm > div {
+    @apply p-2 mb-1 w-fit grid grid-cols-6 gap-x-1 bg-indigo-200 rounded-md;
+}
 .ilf-fuirm button {
     @apply gl-button;
     @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-400;
@@ -113,10 +116,10 @@
     @apply grid gap-px;
     grid-template-columns: repeat(auto-fill, 5em);
 }
-.ilf-claran {
-    @apply p-2 max-w-140 bg-amber-100 text-amber-600 rounded-md grid gap-px;
+.ilf-faclan {
+    @apply p-2 w-full bg-amber-100 text-amber-600 rounded-md grid gap-px;
     grid-template-columns: repeat(auto-fill, minmax(8em, 10em));
 }
-.ilf-clar {
+.ilf-facal {
     @apply px-2 my-1 inline-block rounded hover:bg-amber-200;
 }
