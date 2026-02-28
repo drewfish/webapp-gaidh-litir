@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field, fields
 from typing import Any
-import re
 from fastapi import APIRouter, Request
 
 from .dependencies import ClàranDep, RendererDep
@@ -29,13 +28,27 @@ class Sìolan(ABC):
 
 
 @dataclass
-class SìolanFacal(Sìolan):
+class SìolanAnToiseach(Sìolan):
     breacan: str
-    roghainnean: int = 0
 
     def maidsich(self, clàr: Clàr) -> bool:
-        maids = re.search(self.breacan, clàr["facal"], self.roghainnean)
-        return maids is not None
+        return clàr["facal"].startswith(self.breacan)
+
+
+@dataclass
+class SìolanÀiteSamBith(Sìolan):
+    breacan: str
+
+    def maidsich(self, clàr: Clàr) -> bool:
+        return self.breacan in clàr["facal"]
+
+
+@dataclass
+class SìolanAnDeireadh(Sìolan):
+    breacan: str
+
+    def maidsich(self, clàr: Clàr) -> bool:
+        return clàr["facal"].endswith(self.breacan)
 
 
 @dataclass
@@ -127,7 +140,7 @@ class SìolanSeòrsa(Sìolan):
 @dataclass
 class LorgFaclanIonchur:
     toiseach: str = ""
-    gach_aite: str = ""
+    sam_bith: str = ""
     deireadh: str = ""
     litrn_tha: str = ""
     litrn_chan: str = ""
@@ -177,11 +190,11 @@ async def lorg_faclan(
 
     sìolanan: list[Sìolan] = []
     if ionchur.toiseach:
-        sìolanan.append(SìolanFacal(breacan="^" + re.escape(ionchur.toiseach)))
-    if ionchur.gach_aite:
-        sìolanan.append(SìolanFacal(breacan=re.escape(ionchur.gach_aite)))
+        sìolanan.append(SìolanAnToiseach(breacan=ionchur.toiseach))
+    if ionchur.sam_bith:
+        sìolanan.append(SìolanÀiteSamBith(breacan=ionchur.sam_bith))
     if ionchur.deireadh:
-        sìolanan.append(SìolanFacal(breacan=re.escape(ionchur.deireadh) + "$"))
+        sìolanan.append(SìolanAnDeireadh(breacan=ionchur.deireadh))
     if ionchur.beurla:
         sìolanan.append(SìolanBeurla(breacan=ionchur.beurla))
     if ionchur.litrn_tha:
