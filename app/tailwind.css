@@ -123,3 +123,46 @@ form.ilf-fuirm > div {
 .ilf-facal {
     @apply px-2 my-1 inline-block rounded hover:bg-amber-200;
 }
+.ilf-clar {
+    @apply p-3 text-amber-600 bg-amber-100 rounded-md max-h-[70dvh] max-w-60 overflow-y-auto;
+    min-width: 20rem;
+}
+.ilf-clar-facal {
+    @apply font-bold;
+}
+.ilf-clar-ipa {
+    @apply italic;
+}
+.ilf-clar-seorsa {
+    border-top-width: 1px;
+    @apply border-amber-600/25;
+}
+.ilf-clar-seorsa-gramar i {
+    @apply text-sm italic text-amber-600/50;
+}
+.ilf-clar-seorsa-seorsa {
+    @apply text-sm italic no-underline text-amber-600/50 mr-1;
+}
+.ilf-clar .ilf-eadar-radh {
+    @apply text-amber-600/50;
+}
+#ilf-claran-priob-uinneag {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(200, 200, 200, 0.5);
+    z-index: 1000;
+    padding: 3em;
+    @apply cursor-pointer;
+}
+#ilf-claran-priob-uinneag .ilf-clar {
+    position: fixed;
+    top: 10dvh;
+    left: 10dvw;
+    width: 80dvw;
+    min-height: 20dvh;
+    max-height: 80dvh;
+    @apply border border-amber-300;
+}

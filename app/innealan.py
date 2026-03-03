@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass, field, fields
 from typing import Any
 from fastapi import APIRouter, Request
 
-from .dependencies import ClàranDep, RendererDep
+from .dependencies import FaclanDep, RendererDep
 from .seorsachan import Clàr
 
 router = APIRouter()
@@ -56,12 +56,11 @@ class SìolanBeurla(Sìolan):
     breacan: str
 
     def maidsich(self, clàr: Clàr) -> bool:
-        maids = False
-        for beurla in clàr["Beurla"]:
-            if self.breacan in beurla:
-                maids = True
-                break
-        return maids
+        for seòrsan in clàr["seòrsachan"]:
+            for beurla in seòrsan["beurla"]:
+                if self.breacan in beurla:
+                    return True
+        return False
 
 
 class SìolanLitricheanAnComas(Sìolan):
@@ -75,6 +74,8 @@ class SìolanLitricheanAnComas(Sìolan):
         # This approach allows the searcher to find words with -multiples-
         # of the same letter, e.g. "nn" for words with at-least-two-n.
         eirmeas = self.litrichean
+        if "litrichean" not in clàr:
+            clàr["litrichean"] = "".join(sorted(clàr["facal"].replace(" ", "")))
         cuimse = clàr["litrichean"]
         if len(eirmeas) > len(cuimse):
             return False
@@ -177,7 +178,7 @@ class LorgFaclanIonchur:
 @router.get("/lorg-faclan")
 @router.post("/lorg-faclan")
 async def lorg_faclan(
-    clàran: ClàranDep,
+    faclan: FaclanDep,
     request: Request,
     render: RendererDep,
 ) -> Any:
@@ -209,10 +210,7 @@ async def lorg_faclan(
         sìolanan.append(SìolanSeòrsa(seòrsachan=ionchur.seorsa))
     air_sgeul: list[Clàr] = []
     if sìolanan:
-        for clàr in clàran:
-            # FUTURE -- support phrases perhaps
-            if " " in clàr["facal"]:
-                continue
+        for clàr in faclan:
             maids: bool = True
             for sìolan in sìolanan:
                 if not sìolan.maidsich(clàr):
@@ -223,7 +221,7 @@ async def lorg_faclan(
 
     return render(
         "inneal/lorg-faclan.html",
-        clàran=air_sgeul,
+        faclan=air_sgeul,
         SEÒRSACHAN_TAGHTA=SEÒRSACHAN_TAGHTA,
         ionchur=ionchur.gu_dict(),
     )

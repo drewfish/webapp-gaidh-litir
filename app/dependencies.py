@@ -14,17 +14,17 @@ DATA_DIR = os.environ.get(
     "GAIDH_LITIR_DATA_DIR",
     os.path.abspath(os.path.dirname(__file__) + "/../data"),
 )
-FAIDHLE_CLÀRAN = f"{DATA_DIR}/inneal/clàran-v1.json"
+FAIDHLE_FACLAN = f"{DATA_DIR}/inneal/faclan-v1.json"
 
-_CLÀRAN: Clàran = []
+_FACLAN: Clàran = []
 
 
-def get_clàran() -> Clàran:
-    global _CLÀRAN, FAIDHLE_CLÀRAN
-    if not _CLÀRAN:
-        with open(FAIDHLE_CLÀRAN, encoding="utf-8") as faidhle:
-            _CLÀRAN = json.load(faidhle)
-    return _CLÀRAN
+def get_faclan() -> Clàran:
+    global _FACLAN, FAIDHLE_FACLAN
+    if not _FACLAN:
+        with open(FAIDHLE_FACLAN, encoding="utf-8") as faidhle:
+            _FACLAN = json.load(faidhle)
+    return _FACLAN
 
 
 def get_renderer(request: Request) -> Callable[[str], Response]:
@@ -38,5 +38,5 @@ def get_renderer(request: Request) -> Callable[[str], Response]:
     return _render_template
 
 
-ClàranDep = Annotated[Any, Depends(get_clàran)]
+FaclanDep = Annotated[Any, Depends(get_faclan)]
 RendererDep = Annotated[Any, Depends(get_renderer)]

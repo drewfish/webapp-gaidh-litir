@@ -52,9 +52,9 @@
                     <button class="col-start-2 col-span-4" type="submit">lorg!</button>
                 </div>
             </form>
-            {%- if clàran %}
+            {%- if faclan %}
                 <div class="ilf-faclan">
-                    {%- for clàr in clàran %}
+                    {%- for clàr in faclan %}
                         <div>
                             <a class="ilf-facal">{{clàr.facal}}</a>
                         </div>
@@ -65,4 +65,94 @@
         <div id="ilf-claran-ion-loidhne" class="ml-1 hidden lg:block"></div>
     </div>
     <div id="ilf-claran-priob-uinneag" class="hidden"></div>
+
+    <script type="text/javascript">
+        const FACLAN = {{ faclan | json | safe }};
+        const SEÒRSAN_FHACLAN = {
+            "boir.": "feminine noun",
+            "bua.": "adjective",
+            "co-ghn.": "adverb",
+            "cst.": "question",
+            "fir.": "masculine noun",
+            "gn.": "verb",
+            "m.-fh.": "partical",
+            "nsg.": "conjuction",
+            "roi. gin.": "preposition + genitive",
+            "roi.": "preposition",
+        };
+
+        function _facal_seall_anns_a_DOM(pàrantDOM, clàr) {
+            pàrantDOM.replaceChildren();
+            const clàrDOM = document.createElement("div");
+            clàrDOM.classList.add("ilf-clar");
+            let dom = document.createElement("div");
+            dom.classList.add("ilf-clar-facal");
+            dom.textContent = clàr.facal;
+            clàrDOM.append(dom);
+            if (clàr.ipa) {
+                dom = document.createElement("div");
+                dom.classList.add("ilf-clar-ipa");
+                dom.textContent = clàr.ipa;
+                clàrDOM.append(dom);
+            }
+            for (const seòrsa of clàr.seòrsachan) {
+                const seòrsaDOM = document.createElement("div");
+                seòrsaDOM.classList.add("ilf-clar-seorsa");
+                if (seòrsa.gràmar) {
+                    for (const [k, v] of Object.entries(seòrsa.gràmar)) {
+                        dom = document.createElement("div");
+                        dom.classList.add("ilf-clar-seorsa-gramar");
+                        dom.innerHTML = `<i>${k}</i> ${v}`;
+                        seòrsaDOM.append(dom);
+                    }
+                }
+                for (const beurla of seòrsa.beurla) {
+                    const deifnDOM = document.createElement("div");
+                    deifnDOM.classList.add("ilf-clar-deifn");
+                    let sreang = beurla;
+                    // style parentheses
+                    sreang = sreang.replace(/(\([^)]*\))/g, '<span class="ilf-eadar-radh">$1</span>');
+                    deifnDOM.innerHTML = sreang;
+                    dom = document.createElement("abbr");
+                    dom.classList.add("ilf-clar-seorsa-seorsa");
+                    if (SEÒRSAN_FHACLAN[seòrsa.seòrsa]) {
+                        dom.setAttribute("title", SEÒRSAN_FHACLAN[seòrsa.seòrsa]);
+                    }
+                    dom.textContent = seòrsa.seòrsa;
+                    deifnDOM.prepend(dom);
+                    seòrsaDOM.append(deifnDOM);
+                }
+                clàrDOM.append(seòrsaDOM);
+            }
+            pàrantDOM.append(clàrDOM);
+        }
+
+        function facal_seall(clàr) {
+            const ionLoidhneDOM = document.getElementById("ilf-claran-ion-loidhne");
+            const stoidhle = window.getComputedStyle(ionLoidhneDOM, clàr);
+            if (stoidhle.display !== "none") {
+                _facal_seall_anns_a_DOM(ionLoidhneDOM, clàr);
+                return;
+            }
+            const priobUinneagDOM = document.getElementById("ilf-claran-priob-uinneag");
+            _facal_seall_anns_a_DOM(priobUinneagDOM, clàr);
+            priobUinneagDOM.style.display = "flex";
+        }
+
+        function duilleag_suidheachadh() {
+            const faclanDOM = document.getElementsByClassName("ilf-facal");
+            Array.from(faclanDOM).forEach((facalDOM, àite) => {
+                const clàr = FACLAN[àite];
+                facalDOM.addEventListener("click", () => {
+                    facal_seall(clàr);
+                });
+            });
+            const priobUinneagDOM = document.getElementById("ilf-claran-priob-uinneag");
+            priobUinneagDOM.addEventListener("click", () => {
+                priobUinneagDOM.style.display = "none";
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", duilleag_suidheachadh);
+    </script>
 {% endblock %}
