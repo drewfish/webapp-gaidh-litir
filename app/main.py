@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from app import api_v1, geamaichean, innealan
 
-from .dependencies import RendererDep
+from .eisimealachdan import RendererDep
 
 app = FastAPI(
     docs_url=None,

@@ -3,7 +3,7 @@ from dataclasses import asdict, dataclass, field, fields
 from typing import Any
 from fastapi import APIRouter, Request
 
-from .dependencies import FaclanDep, RendererDep
+from .eisimealachdan import FaclanDep, RendererDep
 from .seorsachan import Clàr
 
 router = APIRouter()

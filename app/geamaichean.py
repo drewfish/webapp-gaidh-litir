@@ -5,7 +5,7 @@ import os.path
 import zoneinfo
 from fastapi import APIRouter
 
-from .dependencies import DATA_DIR, RendererDep
+from .eisimealachdan import DATA_DIR, RendererDep
 
 router = APIRouter()
 
