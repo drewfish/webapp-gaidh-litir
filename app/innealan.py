@@ -51,16 +51,22 @@ class SìolanAnDeireadh(Sìolan):
         return clàr["facal"].endswith(self.breacan)
 
 
-@dataclass
 class SìolanBeurla(Sìolan):
-    breacan: str
+    faclan: list[str]
+
+    def __init__(self, breacan: str) -> None:
+        self.faclan = breacan.split(" ")
 
     def maidsich(self, clàr: Clàr) -> bool:
-        for seòrsan in clàr["seòrsachan"]:
-            for beurla in seòrsan["beurla"]:
-                if self.breacan in beurla:
-                    return True
-        return False
+        for facal in self.faclan:
+            maids = False
+            for seòrsa in clàr["seòrsachan"]:
+                for beurla in seòrsa["beurla"]:
+                    if facal in beurla:
+                        maids = True
+            if not maids:
+                return False
+        return True
 
 
 class SìolanLitricheanAnComas(Sìolan):
