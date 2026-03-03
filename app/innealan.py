@@ -8,17 +8,17 @@ from .seorsachan import Clàr
 
 router = APIRouter()
 
-SEÒRSACHAN_TAGHTA: dict[str, str] = {
-    "boir.": "feminine noun",
-    "bua.": "adjective",
-    "co-ghn.": "adverb",
-    "cst.": "question",
-    "fir.": "masculine noun",
-    "gn.": "verb",
-    "m.-fh.": "partical",
-    "nsg.": "conjuction",
-    "roi. gin.": "preposition + genitive",
-    "roi.": "preposition",
+SEÒRSACHAN_AN_COMAS: dict[str, str] = {
+    "boir.": "ainmear boireannta (feminine noun)",
+    "bua.": "buadhair (adjective)",
+    "co-ghn.": "co-ghnìomhair (adverb)",
+    "cst.": "ceisteach (interrogative)",
+    "fir.": "ainmear fireannta (masculine noun)",
+    "gn.": "gnìomhair (verb)",
+    "m.-fh.": "mion-fhacal (partical)",
+    "nsg.": "naisgear (conjuction)",
+    "roi. gin.": "roimhear le ginideach (preposition + genitive)",
+    "roi.": "roimhear (preposition)",
 }
 
 
@@ -135,7 +135,10 @@ class SìolanSeòrsa(Sìolan):
     seòrsachan: list[str]
 
     def maidsich(self, clàr: Clàr) -> bool:
-        return clàr["seòrsa"] in self.seòrsachan
+        for seòrsa in clàr["seòrsachan"]:
+            if seòrsa["seòrsa"] in self.seòrsachan:
+                return True
+        return False
 
 
 @dataclass
@@ -222,6 +225,6 @@ async def lorg_faclan(
     return render(
         "inneal/lorg-faclan.html",
         faclan=air_sgeul,
-        SEÒRSACHAN_TAGHTA=SEÒRSACHAN_TAGHTA,
+        SEÒRSACHAN_AN_COMAS=SEÒRSACHAN_AN_COMAS,
         ionchur=ionchur.gu_dict(),
     )

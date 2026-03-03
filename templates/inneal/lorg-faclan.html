@@ -41,7 +41,7 @@
 
                     <label class="col-start-1 text-center">seòrsa</label>
                     <div class="ilf-seorsachan col-span-5">
-                        {%- for seòrsa, beurla in SEÒRSACHAN_TAGHTA.items() %}
+                        {%- for seòrsa, beurla in SEÒRSACHAN_AN_COMAS.items() %}
                             <label>
                                 <input type="checkbox" name="seorsa" value="{{seòrsa}}" {% if seòrsa in ionchur.seorsa %}checked{% endif %}/>
                                 <abbr title="{{ beurla }}" >{{seòrsa}}</abbr>
@@ -68,18 +68,7 @@
 
     <script type="text/javascript">
         const FACLAN = {{ faclan | json | safe }};
-        const SEÒRSAN_FHACLAN = {
-            "boir.": "feminine noun",
-            "bua.": "adjective",
-            "co-ghn.": "adverb",
-            "cst.": "question",
-            "fir.": "masculine noun",
-            "gn.": "verb",
-            "m.-fh.": "partical",
-            "nsg.": "conjuction",
-            "roi. gin.": "preposition + genitive",
-            "roi.": "preposition",
-        };
+        const SEÒRSAN_AN_COMAS = {{ SEÒRSACHAN_AN_COMAS | json | safe }};
 
         function _facal_seall_anns_a_DOM(pàrantDOM, clàr) {
             pàrantDOM.replaceChildren();
@@ -115,8 +104,8 @@
                     deifnDOM.innerHTML = sreang;
                     dom = document.createElement("abbr");
                     dom.classList.add("ilf-clar-seorsa-seorsa");
-                    if (SEÒRSAN_FHACLAN[seòrsa.seòrsa]) {
-                        dom.setAttribute("title", SEÒRSAN_FHACLAN[seòrsa.seòrsa]);
+                    if (SEÒRSAN_AN_COMAS[seòrsa.seòrsa]) {
+                        dom.setAttribute("title", SEÒRSAN_AN_COMAS[seòrsa.seòrsa]);
                     }
                     dom.textContent = seòrsa.seòrsa;
                     deifnDOM.prepend(dom);
