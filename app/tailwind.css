@@ -137,8 +137,11 @@ form.ilf-fuirm > div {
     border-top-width: 1px;
     @apply border-amber-600/25;
 }
+.ilf-clar-seorsa-gramar {
+    @apply mr-4 text-amber-600/50;
+}
 .ilf-clar-seorsa-gramar i {
-    @apply text-sm italic text-amber-600/50;
+    @apply text-xs italic;
 }
 .ilf-clar-seorsa-seorsa {
     @apply text-sm italic no-underline text-amber-600/50 mr-1;
