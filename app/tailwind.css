@@ -112,9 +112,15 @@ form.ilf-fuirm > div {
 .ilf-fuirm select {
     @apply px-1 text-blue-950 bg-blue-100;
 }
+.ilf-fuirm .ilf-ionchur-taghta {
+    @apply bg-amber-100;
+}
 .ilf-seoorsachan {
-    @apply grid gap-px;
+    @apply grid gap-0;
     grid-template-columns: repeat(auto-fill, 5em);
+}
+.ilf-seoorsachan label {
+    @apply pl-1;
 }
 .ilf-faclan {
     @apply p-2 w-full bg-amber-100 text-amber-600 rounded-md grid gap-px;

@@ -10,28 +10,28 @@
                     <label class="col-span-2 text-right text-xs">aig an<br/><span class="text-base">deireadh</span></label>
 
                     <input class="col-span-2 text-left" type="text" name="toiseach" value="{{ ionchur.toiseach }}" />
-                    <input class="col-span-2 text-center" type="text" name="sam_bith" value="{{ ionchur.sam_bith }}" >
-                    <input class="col-span-2 text-right" type="text" name="deireadh" value="{{ ionchur.deireadh }}" >
+                    <input class="col-span-2 text-center" type="text" name="sam_bith" value="{{ ionchur.sam_bith }}" />
+                    <input class="col-span-2 text-right" type="text" name="deireadh" value="{{ ionchur.deireadh }}" />
 
                     <label class="col-start-1 col-span-3 text-right">litrichean an comas</label>
-                    <input class="col-span-2 text-left" type="text" name="litrn_tha" value="{{ ionchur.litrn_tha }}" >
+                    <input class="col-span-2 text-left" type="text" name="litrn_tha" value="{{ ionchur.litrn_tha }}" />
 
                     <label class="col-start-1 col-span-3 text-right">litrichean à comas</label>
-                    <input class="col-span-2" type="text" name="litrn_chan" value="{{ ionchur.litrn_chan }}" >
+                    <input class="col-span-2" type="text" name="litrn_chan" value="{{ ionchur.litrn_chan }}" />
 
                     <label class="col-start-1 col-span-3 text-right text-xs">ann am <span class="text-base">Beurla</span></label>
-                    <input class="col-span-2" type="text" name="beurla" value="{{ ionchur.beurla }}" >
+                    <input class="col-span-2" type="text" name="beurla" value="{{ ionchur.beurla }}" />
 
                     <label class="col-start-1 col-span-3 text-right">fad</label>
                     <div class="col-span-2">
-                        <select name="fad_coimheas">
+                        <select name="fad_coimheas" class="ionchur-fad">
                             <option value="lt" {% if ionchur.fad_coimheas == 'lt' %}selected{% endif %}> &lt; </option>
                             <option value="le" {% if ionchur.fad_coimheas == 'le' %}selected{% endif %}> &le; </option>
                             <option value="eq" {% if ionchur.fad_coimheas == 'eq' %}selected{% endif %}> = </option>
                             <option value="ge" {% if ionchur.fad_coimheas == 'ge' %}selected{% endif %}> &ge; </option>
                             <option value="gt" {% if ionchur.fad_coimheas == 'gt' %}selected{% endif %}> &gt; </option>
                         </select>
-                        <select name="fad_teorr">
+                        <select name="fad_teorr" class="ionchur-fad">
                             <option value="">---</option>
                             {%- for i in range(2,20) %}
                                 <option value="{{i}}" {% if ionchur.fad_teorr|int == i %}selected{% endif %}>{{ i }}</option>
@@ -43,7 +43,7 @@
                     <div class="ilf-seoorsachan col-span-5">
                         {%- for seòrsa, beurla in SEÒRSACHAN_AN_COMAS.items() %}
                             <label>
-                                <input type="checkbox" name="seorsa" value="{{seòrsa}}" {% if seòrsa in ionchur.seorsa %}checked{% endif %}/>
+                                <input type="checkbox" name="seorsa" value="{{seòrsa}}" {% if seòrsa in ionchur.seorsa %}checked{% endif %} />
                                 <abbr title="{{ beurla }}" >{{seòrsa}}</abbr>
                             </label>
                         {%- endfor %}
@@ -69,6 +69,43 @@
     <script type="text/javascript">
         const FACLAN = {{ faclan | json | safe }};
         const SEÒRSAN_AN_COMAS = {{ SEÒRSACHAN_AN_COMAS | json | safe }};
+
+        function ionchur_soillsich(ionchurDOM) {
+            if (ionchurDOM.tagName === "INPUT" && ionchurDOM.type === "text") {
+                if (ionchurDOM.value) {
+                    ionchurDOM.classList.add("ilf-ionchur-taghta");
+                } else {
+                    ionchurDOM.classList.remove("ilf-ionchur-taghta");
+                }
+                return;
+            }
+            if (ionchurDOM.tagName === "INPUT" && ionchurDOM.type === "checkbox") {
+                const pàrantDOM = ionchurDOM.parentNode;
+                if (ionchurDOM.checked) {
+                    pàrantDOM.classList.add("ilf-ionchur-taghta");
+                } else {
+                    pàrantDOM.classList.remove("ilf-ionchur-taghta");
+                }
+                return;
+            }
+            if (ionchurDOM.tagName === "SELECT" && ionchurDOM.name.startsWith("fad_")) {
+                const doms = document.getElementsByClassName("ionchur-fad");
+                let soillsich = true;
+                for (const dom of doms) {
+                    if (! dom.value) {
+                        soillsich = false;
+                    }
+                }
+                for (const dom of doms) {
+                    if (soillsich) {
+                        dom.classList.add("ilf-ionchur-taghta");
+                    } else {
+                        dom.classList.remove("ilf-ionchur-taghta");
+                    }
+                }
+                return;
+            }
+        }
 
         function _facal_seall_anns_a_DOM(pàrantDOM, clàr) {
             pàrantDOM.replaceChildren();
@@ -142,6 +179,20 @@
             priobUinneagDOM.addEventListener("click", () => {
                 priobUinneagDOM.style.display = "none";
             });
+            let doms = document.getElementsByTagName("input");
+            for (const dom of doms) {
+                ionchur_soillsich(dom);
+                dom.addEventListener("input", (tachairt) => {
+                    ionchur_soillsich(tachairt.target);
+                });
+            }
+            doms = document.getElementsByTagName("select");
+            for (const dom of doms) {
+                ionchur_soillsich(dom);
+                dom.addEventListener("input", (tachairt) => {
+                    ionchur_soillsich(tachairt.target);
+                });
+            }
         }
 
         document.addEventListener("DOMContentLoaded", duilleag_suidheachadh);
