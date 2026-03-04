@@ -40,7 +40,7 @@
                     </div>
 
                     <label class="col-start-1 text-center">seòrsa</label>
-                    <div class="ilf-seorsachan col-span-5">
+                    <div class="ilf-seoorsachan col-span-5">
                         {%- for seòrsa, beurla in SEÒRSACHAN_AN_COMAS.items() %}
                             <label>
                                 <input type="checkbox" name="seorsa" value="{{seòrsa}}" {% if seòrsa in ionchur.seorsa %}checked{% endif %}/>
@@ -62,9 +62,9 @@
                 </div>
             {%- endif %}
         </div>
-        <div id="ilf-claran-ion-loidhne" class="ml-1 hidden lg:block"></div>
+        <div id="ilf-claaran-ion-loidhne" class="ml-1 hidden lg:block"></div>
     </div>
-    <div id="ilf-claran-priob-uinneag" class="hidden"></div>
+    <div id="ilf-claaran-priob-uinneag" class="hidden"></div>
 
     <script type="text/javascript">
         const FACLAN = {{ faclan | json | safe }};
@@ -73,25 +73,25 @@
         function _facal_seall_anns_a_DOM(pàrantDOM, clàr) {
             pàrantDOM.replaceChildren();
             const clàrDOM = document.createElement("div");
-            clàrDOM.classList.add("ilf-clar");
+            clàrDOM.classList.add("ilf-claar");
             let dom = document.createElement("div");
-            dom.classList.add("ilf-clar-facal");
+            dom.classList.add("ilf-claar-facal");
             dom.textContent = clàr.facal;
             clàrDOM.append(dom);
             if (clàr.ipa) {
                 dom = document.createElement("div");
-                dom.classList.add("ilf-clar-ipa");
+                dom.classList.add("ilf-claar-ipa");
                 dom.textContent = clàr.ipa;
                 clàrDOM.append(dom);
             }
             for (const seòrsa of clàr.seòrsachan) {
                 const seòrsaDOM = document.createElement("div");
-                seòrsaDOM.classList.add("ilf-clar-seorsa");
+                seòrsaDOM.classList.add("ilf-claar-seoorsa");
                 if (seòrsa.gràmar) {
                     const gràmarDOM = document.createElement("div");
                     for (const [k, v] of Object.entries(seòrsa.gràmar)) {
                         dom = document.createElement("span");
-                        dom.classList.add("ilf-clar-seorsa-gramar");
+                        dom.classList.add("ilf-claar-seoorsa-graamar");
                         dom.innerHTML = `<i>${k}</i> ${v}`;
                         gràmarDOM.append(dom);
                     }
@@ -99,13 +99,13 @@
                 }
                 for (const beurla of seòrsa.beurla) {
                     const deifnDOM = document.createElement("div");
-                    deifnDOM.classList.add("ilf-clar-deifn");
+                    deifnDOM.classList.add("ilf-claar-deifn");
                     let sreang = beurla;
                     // style parentheses
-                    sreang = sreang.replace(/(\([^)]*\))/g, '<span class="ilf-eadar-radh">$1</span>');
+                    sreang = sreang.replace(/(\([^)]*\))/g, '<span class="ilf-eadar-raadh">$1</span>');
                     deifnDOM.innerHTML = sreang;
                     dom = document.createElement("abbr");
-                    dom.classList.add("ilf-clar-seorsa-seorsa");
+                    dom.classList.add("ilf-claar-seoorsa-seoorsa");
                     if (SEÒRSAN_AN_COMAS[seòrsa.seòrsa]) {
                         dom.setAttribute("title", SEÒRSAN_AN_COMAS[seòrsa.seòrsa]);
                     }
@@ -119,13 +119,13 @@
         }
 
         function facal_seall(clàr) {
-            const ionLoidhneDOM = document.getElementById("ilf-claran-ion-loidhne");
+            const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
             const stoidhle = window.getComputedStyle(ionLoidhneDOM, clàr);
             if (stoidhle.display !== "none") {
                 _facal_seall_anns_a_DOM(ionLoidhneDOM, clàr);
                 return;
             }
-            const priobUinneagDOM = document.getElementById("ilf-claran-priob-uinneag");
+            const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
             _facal_seall_anns_a_DOM(priobUinneagDOM, clàr);
             priobUinneagDOM.style.display = "flex";
         }
@@ -138,7 +138,7 @@
                     facal_seall(clàr);
                 });
             });
-            const priobUinneagDOM = document.getElementById("ilf-claran-priob-uinneag");
+            const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
             priobUinneagDOM.addEventListener("click", () => {
                 priobUinneagDOM.style.display = "none";
             });

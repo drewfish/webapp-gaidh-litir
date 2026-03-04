@@ -1,16 +1,16 @@
 @import "tailwindcss";
 @source "../templates";
-@utility gl-button {
+@utility gl-buton {
     @apply px-2 py-1 rounded-lg shadow-md cursor-pointer;
 }
-.glf-button {
-    @apply gl-button;
+.glf-buton {
+    @apply gl-buton;
 }
-#glf-geama-error {
+#glf-geama-mearachd {
     @apply font-sans bg-red-300 text-red-800 px-4;
 }
 .glf-oidheam {
-    @apply gl-button mr-1 font-bold;
+    @apply gl-buton mr-1 font-bold;
 }
 .glf-oidheam-far {
     @apply ml-2;
@@ -25,13 +25,13 @@
     @apply text-gray-400/25 bg-gray-100/25 cursor-default;
 }
 .glf-eirmeas {
-    @apply gl-button mr-1 font-bold;
+    @apply gl-buton mr-1 font-bold;
 }
 .glf-eirmeas[data-staid="neo-taghta"] {
-    @apply gl-button text-green-100 bg-green-100 cursor-default;
+    @apply gl-buton text-green-100 bg-green-100 cursor-default;
 }
 .glf-eirmeas[data-staid="taghta"] {
-    @apply gl-button text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600;
+    @apply gl-buton text-green-950 bg-green-200 hover:text-green-200 hover:bg-green-600;
 }
 .glf-cuimse {
     @apply m-1 px-2 py-0 rounded-lg inline-block cursor-pointer;
@@ -66,13 +66,13 @@
 .glf-deifinisean li::marker {
     @apply text-amber-600/50;
 }
-.glf-deifinisean .glf-deifn-seorsa {
+.glf-deifinisean .glf-deifn-seoorsa {
     @apply text-sm italic no-underline text-amber-600/50 mr-1;
 }
 .glf-deifinisean .glf-ionadaich {
     @apply text-amber-600/50;
 }
-.glf-deifinisean .glf-eadar-radh {
+.glf-deifinisean .glf-eadar-raadh {
     @apply text-amber-600/50;
 }
 #glf-priob-uinneag {
@@ -100,7 +100,7 @@ form.ilf-fuirm > div {
     @apply p-2 mb-1 w-fit grid grid-cols-6 gap-x-1 bg-indigo-200 rounded-md;
 }
 .ilf-fuirm button {
-    @apply gl-button;
+    @apply gl-buton;
     @apply text-blue-950 bg-blue-100 hover:text-blue-200 hover:bg-blue-400;
 }
 .ilf-fuirm input {
@@ -112,7 +112,7 @@ form.ilf-fuirm > div {
 .ilf-fuirm select {
     @apply px-1 text-blue-950 bg-blue-100;
 }
-.ilf-seorsachan {
+.ilf-seoorsachan {
     @apply grid gap-px;
     grid-template-columns: repeat(auto-fill, 5em);
 }
@@ -123,33 +123,33 @@ form.ilf-fuirm > div {
 .ilf-facal {
     @apply px-2 my-1 inline-block rounded hover:bg-amber-200;
 }
-.ilf-clar {
+.ilf-claar {
     @apply p-3 text-amber-600 bg-amber-100 rounded-md max-h-[70dvh] max-w-60 overflow-y-auto;
     min-width: 20rem;
 }
-.ilf-clar-facal {
+.ilf-claar-facal {
     @apply font-bold;
 }
-.ilf-clar-ipa {
+.ilf-claar-ipa {
     @apply italic;
 }
-.ilf-clar-seorsa {
+.ilf-claar-seoorsa {
     border-top-width: 1px;
     @apply border-amber-600/25;
 }
-.ilf-clar-seorsa-gramar {
+.ilf-claar-seoorsa-graamar {
     @apply mr-4 text-amber-600/50;
 }
-.ilf-clar-seorsa-gramar i {
+.ilf-claar-seoorsa-graamar i {
     @apply text-xs italic;
 }
-.ilf-clar-seorsa-seorsa {
+.ilf-claar-seoorsa-seoorsa {
     @apply text-sm italic no-underline text-amber-600/50 mr-1;
 }
-.ilf-clar .ilf-eadar-radh {
+.ilf-claar .ilf-eadar-raadh {
     @apply text-amber-600/50;
 }
-#ilf-claran-priob-uinneag {
+#ilf-claaran-priob-uinneag {
     position: fixed;
     top: 0;
     left: 0;
@@ -160,7 +160,7 @@ form.ilf-fuirm > div {
     padding: 3em;
     @apply cursor-pointer;
 }
-#ilf-claran-priob-uinneag .ilf-clar {
+#ilf-claaran-priob-uinneag .ilf-claar {
     position: fixed;
     top: 10dvh;
     left: 10dvw;
