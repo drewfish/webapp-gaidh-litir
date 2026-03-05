@@ -69,6 +69,7 @@
     <script type="text/javascript">
         const FACLAN = {{ faclan | json | safe }};
         const SEÒRSAN_AN_COMAS = {{ SEÒRSACHAN_AN_COMAS | json | safe }};
+        const FACLAN_TAISBEANTA = {};
 
         function ionchur_soillsich(ionchurDOM) {
             if (ionchurDOM.tagName === "INPUT" && ionchurDOM.type === "text") {
@@ -107,14 +108,35 @@
             }
         }
 
-        function _facal_seall_anns_a_DOM(pàrantDOM, clàr) {
-            pàrantDOM.replaceChildren();
+        function facal_ceil(facal) {
+            const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
+            for (const clàrDOM of ionLoidhneDOM.children) {
+                if (clàrDOM.facal === facal) {
+                    ionLoidhneDOM.removeChild(clàrDOM);
+                    delete FACLAN_TAISBEANTA[facal];
+                    return;
+                }
+            }
+        }
+
+        function _facal_seall_DOM(clàr, roghainnean={}) {
             const clàrDOM = document.createElement("div");
+            clàrDOM.facal = clàr.facal;
             clàrDOM.classList.add("ilf-claar");
+            if (roghainnean.so_dùin) {
+                const dom = document.createElement("button");
+                dom.classList.add("ilf-claar-duuin");
+                dom.textContent = "X";
+                clàrDOM.append(dom);
+                dom.addEventListener("click", () => {
+                    facal_ceil(clàr.facal);
+                });
+            }
             let dom = document.createElement("div");
             dom.classList.add("ilf-claar-facal");
             dom.textContent = clàr.facal;
             clàrDOM.append(dom);
+            dom = document.createElement
             if (clàr.ipa) {
                 dom = document.createElement("div");
                 dom.classList.add("ilf-claar-ipa");
@@ -152,28 +174,50 @@
                 }
                 clàrDOM.append(seòrsaDOM);
             }
-            pàrantDOM.append(clàrDOM);
+            return clàrDOM;
         }
 
-        function facal_seall(clàr) {
+        function facal_seall(clàr, roghainnean={}) {
             const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
-            const stoidhle = window.getComputedStyle(ionLoidhneDOM, clàr);
+            const stoidhle = window.getComputedStyle(ionLoidhneDOM);
             if (stoidhle.display !== "none") {
-                _facal_seall_anns_a_DOM(ionLoidhneDOM, clàr);
+                if (FACLAN_TAISBEANTA[clàr.facal]) {
+                    return;
+                }
+                roghainnean.so_dùin = true;
+                ionLoidhneDOM.appendChild(_facal_seall_DOM(clàr, roghainnean));
+                FACLAN_TAISBEANTA[clàr.facal] = true;
                 return;
             }
             const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
-            _facal_seall_anns_a_DOM(priobUinneagDOM, clàr);
+            priobUinneagDOM.replaceChildren();
+            priobUinneagDOM.append(_facal_seall_DOM(clàr));
             priobUinneagDOM.style.display = "flex";
         }
 
         function duilleag_suidheachadh() {
+            const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
+            const stoidhle = window.getComputedStyle(ionLoidhneDOM);
+            let seLuchAthann = false;
+            if (stoidhle.display !== "none") {
+                seLuchAthann = true;
+                const àite = ionLoidhneDOM.getBoundingClientRect();
+                ionLoidhneDOM.style.position = "fixed";
+                ionLoidhneDOM.style.top = `${àite.top}px`;
+                ionLoidhneDOM.style.left = `${àite.left}px`;
+                ionLoidhneDOM.style.height = `${window.innerHeight - àite.top}px`;
+                ionLoidhneDOM.style.overflowY = "auto";
+                ionLoidhneDOM.style.overflowX = "hidden";
+            }
             const faclanDOM = document.getElementsByClassName("ilf-facal");
             Array.from(faclanDOM).forEach((facalDOM, àite) => {
                 const clàr = FACLAN[àite];
                 facalDOM.addEventListener("click", () => {
                     facal_seall(clàr);
                 });
+                if (seLuchAthann) {
+                    // FUTURE -- also setup mouseenter / mouseleave
+                }
             });
             const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
             priobUinneagDOM.addEventListener("click", () => {

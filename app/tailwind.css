@@ -130,8 +130,12 @@ form.ilf-fuirm > div {
     @apply px-2 my-1 inline-block rounded hover:bg-amber-200;
 }
 .ilf-claar {
-    @apply p-3 text-amber-600 bg-amber-100 rounded-md max-h-[70dvh] max-w-60 overflow-y-auto;
+    @apply p-3 relative mb-2 text-amber-600 bg-amber-100 rounded-md max-h-[70dvh] max-w-60 overflow-y-auto;
     min-width: 20rem;
+    box-sizing: border-box;
+}
+.ilf-claar-duuin {
+    @apply gl-buton top-0 z-1 absolute top-0 right-1 bg-amber-100;
 }
 .ilf-claar-facal {
     @apply font-bold;
