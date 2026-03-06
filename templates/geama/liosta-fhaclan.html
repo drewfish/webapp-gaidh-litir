@@ -179,17 +179,17 @@
 
         function staid_leugh() {
             if (window.location.href.includes("?ath-shuidhich") || window.location.href.includes("?reset")) {
-                localStorage.removeItem("staid a' gheama");
+                localStorage.removeItem("geama-liosta-fhaclan");
                 window.location.href = window.location.href.split("?")[0];
                 return;
             }
-            const staidAmh = localStorage.getItem("staid a' gheama");
+            const staidAmh = localStorage.getItem("geama-liosta-fhaclan");
             if (! staidAmh) {
                 return;
             }
             const staid = JSON.parse(staidAmh);
             if (staid.oidheam !== DÀTA_GEAMA.oidheam) {
-                localStorage.removeItem("staid a' gheama");
+                localStorage.removeItem("geama-liosta-fhaclan");
                 return;
             }
             for (const facal in staid.cuimsean) {
@@ -209,7 +209,7 @@
                 staid.cuimsean[cuimse.facal] = cuimse.staid;
             }
             const staidAmh = JSON.stringify(staid);
-            localStorage.setItem("staid a' gheama", staidAmh);
+            localStorage.setItem("geama-liosta-fhaclan", staidAmh);
         }
 
         function oidheam_suidheachadh() {
