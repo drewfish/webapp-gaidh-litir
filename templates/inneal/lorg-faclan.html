@@ -69,7 +69,6 @@
     <script type="text/javascript">
         const FACLAN = {{ faclan | json | safe }};
         const SEÒRSAN_AN_COMAS = {{ SEÒRSACHAN_AN_COMAS | json | safe }};
-        const FACLAN_TAISBEANTA = {};
 
         function ionchur_soillsich(ionchurDOM) {
             if (ionchurDOM.tagName === "INPUT" && ionchurDOM.type === "text") {
@@ -108,40 +107,58 @@
             }
         }
 
-        function facal_ceil(facal) {
-            const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
-            for (const clàrDOM of ionLoidhneDOM.children) {
-                if (clàrDOM.facal === facal) {
-                    ionLoidhneDOM.removeChild(clàrDOM);
-                    delete FACLAN_TAISBEANTA[facal];
-                    return;
-                }
+        function facal_ceil(facal, roghainnean={}) {
+            const id = `facal-${facal}`;
+            const facalDOM = document.getElementById(id);
+            if (! facalDOM) {
+                return;
+            }
+            const prìnichte = facalDOM.getAttribute("data-prìnichte") === "true";
+            if (roghainnean.tar_àithn || !prìnichte) {
+                facalDOM.parentNode.removeChild(facalDOM);
             }
         }
 
-        function _facal_seall_DOM(clàr, roghainnean={}) {
-            const clàrDOM = document.createElement("div");
-            clàrDOM.facal = clàr.facal;
-            clàrDOM.classList.add("ilf-claar");
-            if (roghainnean.so_dùin) {
-                const dom = document.createElement("button");
-                dom.classList.add("ilf-claar-duuin");
-                dom.textContent = "X";
-                clàrDOM.append(dom);
-                dom.addEventListener("click", () => {
-                    facal_ceil(clàr.facal);
-                });
+        function facal_prìnich(facal) {
+            const id = `facal-${facal}`;
+            const facalDOM = document.getElementById(id);
+            if (! facalDOM) {
+                return;
             }
+            const prìnichte = facalDOM.getAttribute("data-prìnichte") === "true";
+            if (prìnichte) {
+                return;
+            }
+            const dom = document.createElement("button");
+            dom.classList.add("ilf-claar-duuin");
+            dom.textContent = "X";
+            dom.addEventListener("click", () => {
+                facal_ceil(facal, {tar_àithn: true});
+            });
+            facalDOM.prepend(dom);
+            facalDOM.setAttribute("data-prìnichte", "true");
+        }
+
+        function _facal_seall_DOM(pàrantDOM, clàr, roghainnean={}) {
+            const facal = clàr.facal;
+            const id = `facal-${facal}`;
+            let facalDOM = document.getElementById(id);
+            if (facalDOM) {
+                return facalDOM;
+            }
+            facalDOM = document.createElement("div");
+            facalDOM.setAttribute("id", id);
+            facalDOM.classList.add("ilf-claar");
             let dom = document.createElement("div");
             dom.classList.add("ilf-claar-facal");
             dom.textContent = clàr.facal;
-            clàrDOM.append(dom);
+            facalDOM.append(dom);
             dom = document.createElement
             if (clàr.ipa) {
                 dom = document.createElement("div");
                 dom.classList.add("ilf-claar-ipa");
                 dom.textContent = clàr.ipa;
-                clàrDOM.append(dom);
+                facalDOM.append(dom);
             }
             for (const seòrsa of clàr.seòrsachan) {
                 const seòrsaDOM = document.createElement("div");
@@ -172,26 +189,26 @@
                     deifnDOM.prepend(dom);
                     seòrsaDOM.append(deifnDOM);
                 }
-                clàrDOM.append(seòrsaDOM);
+                facalDOM.append(seòrsaDOM);
             }
-            return clàrDOM;
+            pàrantDOM.prepend(facalDOM);
+            return facalDOM;
         }
 
         function facal_seall(clàr, roghainnean={}) {
             const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
             const stoidhle = window.getComputedStyle(ionLoidhneDOM);
             if (stoidhle.display !== "none") {
-                if (FACLAN_TAISBEANTA[clàr.facal]) {
-                    return;
+                const facalDOM = _facal_seall_DOM(ionLoidhneDOM, clàr, roghainnean);
+                if (roghainnean.prìnich) {
+                    facal_prìnich(clàr.facal);
                 }
-                roghainnean.so_dùin = true;
-                ionLoidhneDOM.appendChild(_facal_seall_DOM(clàr, roghainnean));
-                FACLAN_TAISBEANTA[clàr.facal] = true;
+                facalDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
                 return;
             }
             const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
             priobUinneagDOM.replaceChildren();
-            priobUinneagDOM.append(_facal_seall_DOM(clàr));
+            _facal_seall_DOM(priobUinneagDOM, clàr, roghainnean);
             priobUinneagDOM.style.display = "flex";
         }
 
@@ -213,10 +230,15 @@
             Array.from(faclanDOM).forEach((facalDOM, àite) => {
                 const clàr = FACLAN[àite];
                 facalDOM.addEventListener("click", () => {
-                    facal_seall(clàr);
+                    facal_seall(clàr, {prìnich: true});
                 });
                 if (seLuchAthann) {
-                    // FUTURE -- also setup mouseenter / mouseleave
+                    facalDOM.addEventListener("mouseenter", () => {
+                        facal_seall(clàr);
+                    });
+                    facalDOM.addEventListener("mouseleave", () => {
+                        facal_ceil(clàr.facal);
+                    });
                 }
             });
             const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
