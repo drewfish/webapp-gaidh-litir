@@ -72,7 +72,7 @@
 .glf-deifinisean .glf-ionadaich {
     @apply text-amber-600/50;
 }
-.glf-deifinisean .glf-eadar-raadh {
+.glf-deifinisean .deifn-eadar-raadh {
     @apply text-amber-600/50;
 }
 #glf-priob-uinneag {
@@ -156,8 +156,11 @@ form.ilf-fuirm > div {
 .ilf-claar-seoorsa-seoorsa {
     @apply text-sm italic no-underline text-amber-600/50 mr-1;
 }
-.ilf-claar .ilf-eadar-raadh {
+.ilf-claar .deifn-eadar-raadh {
     @apply text-amber-600/50;
+}
+.ilf-claar .deifn-eadar-raadh .deifn-eadar-raadh {
+    @apply text-xs;
 }
 #ilf-claaran-priob-uinneag {
     position: fixed;

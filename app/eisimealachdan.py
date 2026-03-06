@@ -14,7 +14,7 @@ DATA_DIR = os.environ.get(
     "GAIDH_LITIR_DATA_DIR",
     os.path.abspath(os.path.dirname(__file__) + "/../data"),
 )
-FAIDHLE_FACLAN = f"{DATA_DIR}/inneal/faclan-v1.json"
+FAIDHLE_FACLAN = f"{DATA_DIR}/inneal/faclan-v2.json"
 
 _FACLAN: Clàran = []
 

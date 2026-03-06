@@ -176,10 +176,7 @@
                 for (const beurla of seòrsa.beurla) {
                     const deifnDOM = document.createElement("div");
                     deifnDOM.classList.add("ilf-claar-deifn");
-                    let sreang = beurla;
-                    // style parentheses
-                    sreang = sreang.replace(/(\([^)]*\))/g, '<span class="ilf-eadar-raadh">$1</span>');
-                    deifnDOM.innerHTML = sreang;
+                    deifnDOM.innerHTML = beurla;
                     dom = document.createElement("abbr");
                     dom.classList.add("ilf-claar-seoorsa-seoorsa");
                     if (SEÒRSAN_AN_COMAS[seòrsa.seòrsa]) {

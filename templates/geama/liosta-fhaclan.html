@@ -495,8 +495,6 @@
                         // FUTURE -- ... or maybe not?  redacting -is- a clue to the player
                         sreang = sreang.replace(facal, '<span class="glf-ionadaich">' + "_".repeat(facal.length) + '</span>');
                     }
-                    // style parentheses
-                    sreang = sreang.replace(/(\([^)]*\))/g, '<span class="glf-eadar-raadh">$1</span>');
                     clàrDOM.innerHTML = sreang;
                     clàrDOM.prepend(seòrsaDOM);
                     liostaDOM.appendChild(clàrDOM);
