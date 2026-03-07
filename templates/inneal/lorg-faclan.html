@@ -3,7 +3,7 @@
 {% block content %}
     <div class="flex flex-row">
         <div class="flex flex-col items-center w-140 lg:w-180">
-            <form method="post" action="/lorg-faclan" class="ilf-fuirm">
+            <form id="ilf-fuirm" method="get" action="/lorg-faclan" class="ilf-fuirm">
                 <div class="w-140">
                     <label class="col-span-2 text-left text-xs">aig an<br/><span class="text-base">toiseach</span></label>
                     <label class="col-span-2 text-center text-xs">àite<br/><span class="text-base">sam bith</span></label>
@@ -69,6 +69,7 @@
     <script type="text/javascript">
         const FACLAN = {{ faclan | json | safe }};
         const SEÒRSAN_AN_COMAS = {{ SEÒRSACHAN_AN_COMAS | json | safe }};
+        const FAD_COIMHEASAN = { "lt": "%3C", "le": "%3C=", "eq": "=", "ge": "%3E=", "gt": "%3E" };
 
         function ionchur_soillsich(ionchurDOM) {
             if (ionchurDOM.tagName === "INPUT" && ionchurDOM.type === "text") {
@@ -212,6 +213,32 @@
             priobUinneagDOM.style.display = "flex";
         }
 
+        function faclan_lorg() {
+            const fuirmDOM = document.getElementById("ilf-fuirm");
+            const fuirm = [];
+            for (const ionchurDOM of fuirmDOM.getElementsByTagName("input")) {
+                const ainm = ionchurDOM.name;
+                const fiach = ionchurDOM.value;
+                if (! fiach) {
+                    continue;
+                }
+                if (ionchurDOM.type === "checkbox" && !ionchurDOM.checked) {
+                    continue;
+                }
+                fuirm.push(ainm + "=" + encodeURIComponent(fiach));
+            }
+            const taghadairean = {};
+            for (const taghDOM of fuirmDOM.getElementsByTagName("select")) {
+                taghadairean[taghDOM.name] = taghDOM.value;
+            }
+            if (taghadairean.fad_teorr) {
+                const coimeas = FAD_COIMHEASAN[taghadairean.fad_coimheas];
+                fuirm.push("fad" + coimeas + taghadairean.fad_teorr);
+            }
+            const url = fuirmDOM.getAttribute("action") + "?" + fuirm.join("&");
+            window.location.href = url;
+        }
+
         function deifiniseanan_suidheachadh(farsaing) {
             const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
             if (farsaing) {
@@ -247,7 +274,7 @@
             });
             if (FACLAN.length <= 4) {
                 for (const clàr of FACLAN.reverse()) {
-                    facal_seall(clàr, {fosgail: false});
+                    facal_seall(clàr, {fosgail: false, prìnich: true});
                 }
             }
         }
@@ -267,6 +294,11 @@
                     ionchur_soillsich(tachairt.target);
                 });
             }
+            const fuirmDOM = document.getElementById("ilf-fuirm");
+            fuirmDOM.addEventListener("submit", (tachairt) => {
+                tachairt.preventDefault();
+                faclan_lorg();
+            });
         }
 
         function duilleag_suidheachadh() {

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field, fields
 from typing import Any
+import re
 from fastapi import APIRouter, Request
 
 from .eisimealachdan import FaclanDep, RendererDep
@@ -19,6 +20,13 @@ SEÒRSACHAN_AN_COMAS: dict[str, str] = {
     "nsg.": "naisgear (conjuction)",
     "roi. gin.": "roimhear le ginideach (preposition + genitive)",
     "roi.": "roimhear (preposition)",
+}
+FAD_COIMHEASAN: dict[str, str] = {
+    "%3C": "lt",
+    "%3C=": "le",
+    "=": "eq",
+    "%3E=": "ge",
+    "%3E": "gt",
 }
 
 
@@ -159,7 +167,7 @@ class LorgFaclanIonchur:
     fad_teorr: int = 0
     seorsa: list[str] = field(default_factory=list)
 
-    def bhon_fastapi(self, ionchur: Any) -> None:
+    def bhon_fastapi(self, ionchur: Any, sreang: bool = False) -> None:
         for f in fields(self):
             if f.type is str:
                 luach = ionchur.get(f.name)
@@ -179,6 +187,16 @@ class LorgFaclanIonchur:
                 luach = ionchur.getlist(f.name)
                 if luach:
                     setattr(self, f.name, luach)
+        if sreang:
+            pàirtean = str(ionchur).split("?")[0].split("&")
+            for pàirt in pàirtean:
+                breacan = r"^fad(?P<coimheas>(%[0-9A-F][0-9A-F])?=?)(?P<teorr>\d+)"
+                flags = re.IGNORECASE
+                maids = re.search(breacan, pàirt, flags=flags)
+                if maids:
+                    coimheas = maids.group("coimheas")
+                    self.fad_coimheas = FAD_COIMHEASAN.get(coimheas, "")
+                    self.fad_teorr = int(maids.group("teorr"))
 
     def gu_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -193,7 +211,7 @@ async def lorg_faclan(
 ) -> Any:
     ionchur = LorgFaclanIonchur()
     if request.query_params:
-        ionchur.bhon_fastapi(request.query_params)
+        ionchur.bhon_fastapi(request.query_params, True)
     fuirm = await request.form(max_files=0)
     if fuirm:
         ionchur.bhon_fastapi(fuirm)
