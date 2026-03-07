@@ -203,18 +203,18 @@
                 facalDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
                 return;
             }
+            if (! (roghainnean.fosgail ?? false)) {
+                return;
+            }
             const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
             priobUinneagDOM.replaceChildren();
             _facal_seall_DOM(priobUinneagDOM, clàr, roghainnean);
             priobUinneagDOM.style.display = "flex";
         }
 
-        function duilleag_suidheachadh() {
+        function deifiniseanan_suidheachadh(farsaing) {
             const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
-            const stoidhle = window.getComputedStyle(ionLoidhneDOM);
-            let seLuchAthann = false;
-            if (stoidhle.display !== "none") {
-                seLuchAthann = true;
+            if (farsaing) {
                 const àite = ionLoidhneDOM.getBoundingClientRect();
                 ionLoidhneDOM.style.position = "fixed";
                 ionLoidhneDOM.style.top = `${àite.top}px`;
@@ -223,13 +223,20 @@
                 ionLoidhneDOM.style.overflowY = "auto";
                 ionLoidhneDOM.style.overflowX = "hidden";
             }
+            const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
+            priobUinneagDOM.addEventListener("click", () => {
+                priobUinneagDOM.style.display = "none";
+            });
+        }
+
+        function faclan_suidheachadh(farsaing) {
             const faclanDOM = document.getElementsByClassName("ilf-facal");
             Array.from(faclanDOM).forEach((facalDOM, àite) => {
                 const clàr = FACLAN[àite];
                 facalDOM.addEventListener("click", () => {
                     facal_seall(clàr, {prìnich: true});
                 });
-                if (seLuchAthann) {
+                if (farsaing) {
                     facalDOM.addEventListener("mouseenter", () => {
                         facal_seall(clàr);
                     });
@@ -238,10 +245,14 @@
                     });
                 }
             });
-            const priobUinneagDOM = document.getElementById("ilf-claaran-priob-uinneag");
-            priobUinneagDOM.addEventListener("click", () => {
-                priobUinneagDOM.style.display = "none";
-            });
+            if (FACLAN.length <= 4) {
+                for (const clàr of FACLAN.reverse()) {
+                    facal_seall(clàr, {fosgail: false});
+                }
+            }
+        }
+
+        function fuirm_suidheachadh() {
             let doms = document.getElementsByTagName("input");
             for (const dom of doms) {
                 ionchur_soillsich(dom);
@@ -256,6 +267,17 @@
                     ionchur_soillsich(tachairt.target);
                 });
             }
+        }
+
+        function duilleag_suidheachadh() {
+            let farsaing = false;
+            const ionLoidhneDOM = document.getElementById("ilf-claaran-ion-loidhne");
+            if (window.getComputedStyle(ionLoidhneDOM).display !== "none") {
+                farsaing = true;
+            }
+            deifiniseanan_suidheachadh(farsaing);
+            faclan_suidheachadh(farsaing);
+            fuirm_suidheachadh();
         }
 
         document.addEventListener("DOMContentLoaded", duilleag_suidheachadh);
