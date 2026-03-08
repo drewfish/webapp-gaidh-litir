@@ -56,7 +56,7 @@
     @apply px-4 py-1 rounded-lg text-lg font-bold text-green-950 bg-green-200;
 }
 .glf-ipa {
-    @apply italic;
+    @apply italic text-amber-600/50;
 }
 .glf-deifinisean {
     @apply p-3 text-amber-600 bg-amber-100 rounded-md max-h-[70dvh] overflow-y-auto;
