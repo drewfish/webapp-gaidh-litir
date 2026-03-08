@@ -189,7 +189,7 @@
                 }
                 facalDOM.append(seòrsaDOM);
             }
-            pàrantDOM.prepend(facalDOM);
+            pàrantDOM.append(facalDOM);
             return facalDOM;
         }
 
@@ -272,8 +272,8 @@
                     });
                 }
             });
-            if (FACLAN.length <= 4) {
-                for (const clàr of FACLAN.reverse()) {
+            if (FACLAN.length <= 3) {
+                for (const clàr of FACLAN) {
                     facal_seall(clàr, {fosgail: false, prìnich: true});
                 }
             }
