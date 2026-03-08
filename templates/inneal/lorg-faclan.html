@@ -116,7 +116,11 @@
             }
             const prìnichte = facalDOM.getAttribute("data-prìnichte") === "true";
             if (roghainnean.tar_àithn || !prìnichte) {
-                facalDOM.parentNode.removeChild(facalDOM);
+                if (roghainnean.glèidh_spàs) {
+                    facalDOM.classList.add("invisible");
+                } else {
+                    facalDOM.parentNode.removeChild(facalDOM);
+                }
             }
         }
 
@@ -145,6 +149,7 @@
             const id = `facal-${facal}`;
             let facalDOM = document.getElementById(id);
             if (facalDOM) {
+                facalDOM.classList.remove("invisible");
                 return facalDOM;
             }
             facalDOM = document.createElement("div");
@@ -201,7 +206,13 @@
                 if (roghainnean.prìnich) {
                     facal_prìnich(clàr.facal);
                 }
-                facalDOM.scrollIntoView({behavior: "smooth", block: "nearest"});
+                // _facal_seall_DOM() has kinda used the spàs glèidhte, so this/these
+                // are actually leftover
+                const damnaichteDOM = ionLoidhneDOM.getElementsByClassName("invisible");
+                for (const dom of damnaichteDOM) {
+                    dom.parentNode.removeChild(dom);
+                }
+                facalDOM.scrollIntoView({behavior: "smooth", block: "end"});
                 return;
             }
             if (! (roghainnean.fosgail ?? false)) {
@@ -268,7 +279,7 @@
                         facal_seall(clàr);
                     });
                     facalDOM.addEventListener("mouseleave", () => {
-                        facal_ceil(clàr.facal);
+                        facal_ceil(clàr.facal, {glèidh_spàs: true});
                     });
                 }
             });
