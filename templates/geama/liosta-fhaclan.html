@@ -24,12 +24,14 @@
         </div>
         <div id="deifinisean-ion-loidhne" class="ml-1 hidden md:block">
             <div class="glf-deifinisean">
+                <div class="glf-ipa"></div>
                 <ul class="glf-liosta-dheifinisean"></ul>
             </div>
         </div>
     </div>
     <div id="glf-priob-uinneag" class="hidden">
         <div class="glf-deifinisean">
+            <div class="glf-ipa"></div>
             <ul class="glf-liosta-dheifinisean"></ul>
         </div>
     </div>
@@ -59,6 +61,7 @@
             "roi.": "roimhear (preposition)",
         };
         const DEIFINISEANAN = {};
+        const IPAN = {};
 
         function geama_suidheachadh() {
             if (DÀTA_GEAMA.error) {
@@ -139,6 +142,7 @@
 
         function staid_suidheachadh() {
             DEIFINISEANAN[DÀTA_GEAMA.oidheam] = DÀTA_GEAMA.oidheam_deifiniseanan;
+            IPAN[DÀTA_GEAMA.oidheam] = DÀTA_GEAMA.oidheam_ipa;
             for (const cuimse of DÀTA_GEAMA.cuimsean) {
                 STAID.cuimsean[cuimse.facal] = {
                     facal: cuimse.facal,
@@ -148,6 +152,7 @@
                     STAID.le_tàthan = true;
                 }
                 DEIFINISEANAN[cuimse.facal] = cuimse.deifiniseanan;
+                IPAN[cuimse.facal] = cuimse.ipa;
             }
             for (const [àite, litir] of DÀTA_GEAMA.oidheam.split("").entries()) {
                 STAID.oidheam[àite] = {
@@ -232,7 +237,7 @@
 
         function oidheam_cliog(àite) {
             if (STAID.comhailteach) {
-                deifinisean_seall(DÀTA_GEAMA.oidheam, {fosgail: true});
+                deifinisean_seall(DÀTA_GEAMA.oidheam, { fosgail: true, leIPA: true });
                 return;
             }
             const oidheam = STAID.oidheam[àite];
@@ -365,7 +370,7 @@
             geama_ùraich();
             geama_comhailteach();
             staid_sgriobh();
-            deifinisean_seall(eirmeas, {fosgail: true});
+            deifinisean_seall(eirmeas, { fosgail: true, leIPA: true });
         }
 
         function eirmeas_ùraich() {
@@ -449,7 +454,8 @@
             for (const cuimse of Object.values(STAID.cuimsean)) {
                 const cuimseDOM = document.getElementById(`cuimse-${cuimse.facal}`);
                 cuimseDOM.addEventListener("click", () => {
-                    deifinisean_seall(cuimse.facal, { fosgail: true });
+                    const leIPA = cuimse_nochdaidh(cuimse.staid);
+                    deifinisean_seall(cuimse.facal, { fosgail: true, leIPA });
                 });
             }
         }
@@ -473,11 +479,18 @@
         function deifinisean_suidheachadh() {
             const priobUinneagDOM = document.getElementById("glf-priob-uinneag");
             priobUinneagDOM.addEventListener("click", deifinisean_folaich);
-            deifinisean_seall(DÀTA_GEAMA.oidheam, {fosgail: false});
+            deifinisean_seall(DÀTA_GEAMA.oidheam, { fosgail: false, leIPA: true });
         }
 
         function deifinisean_seall(facal, roghainnean={}) {
             const deifnan = DEIFINISEANAN[facal] || [];
+            for (const ipaDOM of document.getElementsByClassName("glf-ipa")) {
+                if (roghainnean.leIPA && IPAN[facal]) {
+                    ipaDOM.textContent = IPAN[facal];
+                } else {
+                    ipaDOM.textContent = "";
+                }
+            }
             const liostaDOMs = document.getElementsByClassName("glf-liosta-dheifinisean");
             for (const liostaDOM of liostaDOMs) {
                 liostaDOM.replaceChildren();
