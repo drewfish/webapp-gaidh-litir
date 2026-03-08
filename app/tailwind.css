@@ -159,9 +159,6 @@ form.ilf-fuirm > div {
 .ilf-claar .deifn-eadar-raadh {
     @apply text-amber-600/50;
 }
-.ilf-claar .deifn-eadar-raadh .deifn-eadar-raadh {
-    @apply text-xs;
-}
 #ilf-claaran-priob-uinneag {
     position: fixed;
     top: 0;
