@@ -70,6 +70,7 @@
         const FACLAN = {{ faclan | json | safe }};
         const SEÒRSAN_AN_COMAS = {{ SEÒRSACHAN_AN_COMAS | json | safe }};
         const FAD_COIMHEASAN = { "lt": "%3C", "le": "%3C=", "eq": "=", "ge": "%3E=", "gt": "%3E" };
+        const IONCHUR = {{ ionchur | json | safe }};
 
         function ionchur_soillsich(ionchurDOM) {
             if (ionchurDOM.tagName === "INPUT" && ionchurDOM.type === "text") {
@@ -317,7 +318,14 @@
                 faclan_lorg();
             });
             const staid = staid_leugh();
-            if (staid.fòcasaichte) {
+            let leIonchur = false;
+            for (const val of Object.values(IONCHUR)) {
+                if (val.length) {
+                    leIonchur = true;
+                    break;
+                }
+            }
+            if (leIonchur && staid.fòcasaichte) {
                 const doms = document.getElementsByName(staid.fòcasaichte);
                 const ionchurDOM = doms[0];
                 if (ionchurDOM) {
