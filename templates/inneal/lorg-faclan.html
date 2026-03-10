@@ -246,6 +246,12 @@
                 const coimeas = FAD_COIMHEASAN[taghadairean.fad_coimheas];
                 fuirm.push("fad" + coimeas + taghadairean.fad_teorr);
             }
+            const staid = staid_leugh();
+            staid.fòcasaichte = undefined;
+            if (document.activeElement && document.activeElement.tagName === "INPUT") {
+                staid.fòcasaichte = document.activeElement.name;
+            }
+            staid_sgriobh(staid);
             const url = fuirmDOM.getAttribute("action") + "?" + fuirm.join("&");
             window.location.href = url;
         }
@@ -310,6 +316,25 @@
                 tachairt.preventDefault();
                 faclan_lorg();
             });
+            const staid = staid_leugh();
+            if (staid.fòcasaichte) {
+                const doms = document.getElementsByName(staid.fòcasaichte);
+                const ionchurDOM = doms[0];
+                if (ionchurDOM) {
+                    ionchurDOM.focus();
+                    const fad = ionchurDOM.value.length;
+                    ionchurDOM.setSelectionRange(fad, fad);
+                }
+            }
+        }
+
+        function staid_leugh() {
+            const staid = localStorage.getItem("inneal-lorg-faclan") ?? "{}";
+            return JSON.parse(staid);
+        }
+
+        function staid_sgriobh(staid) {
+            localStorage.setItem("inneal-lorg-faclan", JSON.stringify(staid));
         }
 
         function duilleag_suidheachadh() {
