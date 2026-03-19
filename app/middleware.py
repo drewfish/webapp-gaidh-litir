@@ -1,12 +1,14 @@
 from typing import Any
 from urllib.parse import urlunsplit
 import datetime
+import logging
 import os
-import traceback
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
+_LOGGER = logging.getLogger("app.request")
+_LOGGER.setLevel(logging.INFO)
 _COLORS: dict[str, str] = {
     "blue": "34",
     "green": "32",
@@ -57,16 +59,19 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                 code = _color("yellow", code)
             else:
                 code = _color("red", code)
-            print(
-                "REQUEST",
-                _color("grey", start),
-                f"{duration_ms:4}",
-                method,
-                code,
-                path,
-                _color("grey", client_ip),
-                proto,
-                _color("grey", referer),
+            _LOGGER.info(
+                " ".join(
+                    [
+                        _color("grey", start),
+                        f"{duration_ms:4}",
+                        method,
+                        code,
+                        path,
+                        _color("grey", client_ip),
+                        proto,
+                        _color("grey", referer),
+                    ]
+                )
             )
 
         try:
@@ -76,7 +81,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         except Exception as exc:
             res_end = datetime.datetime.now(datetime.UTC)
             _log(res_end, 500)
-            print("EXCEPTION", type(exc).__name__, str(exc), traceback.format_exc())
+            _LOGGER.exception(_color("red", "EXCEPTION"), exc_info=exc)
             return JSONResponse(
                 status_code=500, content={"error": "internal server error"}
             )

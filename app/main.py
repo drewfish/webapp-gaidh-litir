@@ -7,6 +7,7 @@ from app.middleware import RequestLoggingMiddleware
 
 from .eisimealachdan import RendererDep
 
+logging.basicConfig(level=logging.INFO)
 uvicorn_access = logging.getLogger("uvicorn.access")
 uvicorn_access.disabled = True
 
