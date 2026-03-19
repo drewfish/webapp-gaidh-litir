@@ -1,4 +1,5 @@
 #!/bin/bash
 echo "PORT = $PORT"
+set -x
 # this will use dependecies restored from the Render cache
-uv run -- uvicorn --host 0.0.0.0 --port "$PORT" --no-access-log app.main:app
+uv run -- uvicorn --host 0.0.0.0 --port "$PORT" app.main:app

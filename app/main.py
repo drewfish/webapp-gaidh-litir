@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI, Response
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -5,6 +6,9 @@ from app import api_v1, geamaichean, innealan
 from app.middleware import RequestLoggingMiddleware
 
 from .eisimealachdan import RendererDep
+
+uvicorn_access = logging.getLogger("uvicorn.access")
+uvicorn_access.disabled = True
 
 app = FastAPI(
     docs_url=None,
