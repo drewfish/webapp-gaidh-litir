@@ -32,7 +32,7 @@ local-format: $(PYTHON_FILES)
 
 local-run:
 	npx @tailwindcss/cli --input ./app/tailwind.css --output ./static/tailwind.css --watch=always &
-	uv run -- uvicorn --host 0.0.0.0 --port 8000 --reload app.main:app
+	uv run -- uvicorn --host 0.0.0.0 --port 8000 --no-access-log --reload app.main:app
 
 pre-commit:
 	make build-css
